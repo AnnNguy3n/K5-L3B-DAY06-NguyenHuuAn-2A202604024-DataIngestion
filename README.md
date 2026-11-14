@@ -26,7 +26,9 @@ python3 scripts/read_corpus.py
 python3 -m starter.src.prepare
 ```
 
-Lệnh đọc corpus cần Ollama và model vision local như mô tả trong hướng dẫn dữ liệu. Các test dùng mock cho phản hồi VLM và ghi kết quả vào thư mục tạm, không thay thế kết quả corpus thật. Ở checkpoint 5, tôi đã lưu 337 vector và chạy top-3 cho cả ba chiến lược trên 15 câu dev. Năm câu test và phần chấm điểm dành cho checkpoint sau. [Lệnh tái lập](starter/README.md#2-lưu-vector-và-chạy-dev) · [Trace dev](starter/results/dev_top3.jsonl)
+Lệnh đọc corpus cần Ollama và model vision local như mô tả trong hướng dẫn dữ liệu. Các test dùng mock cho phản hồi VLM và ghi kết quả vào thư mục tạm, không thay thế kết quả corpus thật. Ở checkpoint 5, tôi đã lưu 337 vector và chạy top-3 cho cả ba chiến lược trên 15 câu dev. Ở checkpoint 6, tôi đã khóa C trên dev và chạy riêng 5 câu test cho cả A/B/C. [Báo cáo benchmark và audit](report/individual/2A202604024_NguyenHuuAn.md#checkpoint-6--benchmark-và-audit-330) · [Hướng dẫn chạy checkpoint 6](starter/README.md#checkpoint-6) [Lệnh tái lập](starter/README.md#2-lưu-vector-và-chạy-dev) · [Trace dev](starter/results/dev_top3.jsonl)
+
+Tôi đã chốt checkpoint 6 cho bản demo: có kết quả dev/test, khóa lựa chọn C và điểm coherence/grounding từ student_score đã điền. Tôi bỏ qua đối chiếu metadata với PDF thủ công; thống kê metadata hiện chỉ là kết quả kiểm tra tự động và chưa đáp ứng đầy đủ phần audit thủ công theo GUIDE. Tôi ghi giới hạn này trong báo cáo cá nhân.
 
 ## Bắt đầu nhanh
 

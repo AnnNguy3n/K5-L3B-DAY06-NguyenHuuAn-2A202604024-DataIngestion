@@ -1,0 +1,40 @@
+{
+  "dev": {
+    "A": {
+      "hit1": {
+        "count": 6,
+        "total": 15,
+        "rate": 0.4
+      },
+      "evidence_hit3": {
+        "count": 9,
+        "total": 15,
+        "rate": 0.6
+      }
+    },
+    "B": {
+      "hit1": {
+        "count": 14,
+        "total": 15,
+        "rate": 0.9333333333333333
+      },
+      "evidence_hit3": {
+        "count": 15,
+        "total": 15,
+        "rate": 1.0
+      }
+    },
+    "C": {
+      "hit1": {
+        "count": 14,
+        "total": 15,
+        "rate": 0.9333333333333333
+      },
+      "evidence_hit3": {
+        "count": 15,
+        "total": 15,
+        "rate": 1.0
+      }
+    }
+  }
+}

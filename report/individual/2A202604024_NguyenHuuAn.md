@@ -4,7 +4,7 @@
 - MSSV: 2A202604024
 - Lớp: L3B
 - Ngày cập nhật: 14/11/2026
-- Phạm vi báo cáo: Hoàn thành checkpoint 1 — chọn dữ liệu và setup — checkpoint 2 — xây benchmark — checkpoint 3 — đọc, chuẩn hóa và thử chunk — cùng checkpoint 5 — lưu vector và chạy A/B/C. Đây là báo cáo tiến độ, chưa phải báo cáo kết quả cuối bài.
+- Phạm vi báo cáo: Hoàn thành checkpoint 1 — chọn dữ liệu và setup — checkpoint 2 — xây benchmark — checkpoint 3 — đọc, chuẩn hóa và thử chunk — cùng checkpoint 5 — lưu vector và chạy A/B/C. Tôi chốt checkpoint 6 cho bản demo với benchmark thực chạy và student_score đã điền cho coherence/grounding; tôi bỏ qua đối chiếu metadata với PDF thủ công.
 
 ## Dữ liệu và pipeline
 
@@ -123,14 +123,57 @@ Tôi dùng `checkpoint5_reload.json` để ghi nhận nạp lại cùng snapshot
 
 Tôi lưu cấu hình local tại `checkpoint5_model_config.json`: hidden size 512 khác chiều đầu ra embedding 768; tôi sử dụng chiều embedding 768 và kiểm tra độ dài vector thực tế. `checkpoint5_unittest.log` là lần chạy lại 22 test ingestion/chunking và trích xuất hình đã có, không phải bộ test riêng cho embedding hoặc SQL retrieval. Minh chứng tích hợp nằm trong các báo cáo initial/reload/restart/changed và trace dev. Tôi chưa có thời gian truy xuất riêng cho từng chiến lược; `dev_seconds` đo embedding câu hỏi và truy vấn cả A/B/C.
 
-## Kết quả retrieval và audit
+## Checkpoint 6 — benchmark và audit (3:30)
 
-Tôi chưa có Hit@1, Evidence Hit@3, nhãn coherence, audit metadata hoặc điểm grounding. Tôi chưa thực hiện so sánh A–B và B–C, chưa có chiến lược được chọn hoặc ví dụ lỗi retrieval. Các bảng theo mẫu báo cáo sẽ được bổ sung bằng kết quả thực chạy ở những checkpoint sau.
+Tôi đã chấm evidence retrieval trên snapshot checkpoint 5. Mỗi hit cần đúng document ID, trang PDF vật lý và toàn bộ trích dẫn trong **một** chunk sau khi gộp whitespace. Tôi chấp nhận cả hai gold của q11. Trace lưu câu hỏi, đáp án tham chiếu, filter yêu cầu/thực dùng, gold, text, metadata, cosine score, hạng và chỉ số gold khớp (0 là gold chính). Tôi không sinh câu trả lời LLM. [Trace dev](../../starter/results/checkpoint6/dev_scored.jsonl) · [Trace test](../../starter/results/checkpoint6/test_scored.jsonl)
 
-## Công cụ AI và cách kiểm tra
+### Chọn trên dev, sau đó mở test
 
-Tôi sử dụng Codex để hỗ trợ giải thích yêu cầu, hiện thực adapter embedding, vector store và orchestration, review code, đối chiếu bộ câu hỏi với yêu cầu benchmark, kiểm tra evidence và tính nhất quán dữ liệu, đồng thời cập nhật báo cáo tiến độ. Tôi sử dụng Ollama với model vision local để trích nội dung hình. Tôi lưu nguồn và output để đối chiếu, chạy test và kiểm tra hash; tôi không coi phản hồi AI là gold evidence khi chưa xác minh với tài liệu gốc.
+| Dev | Hit@1 | Evidence Hit@3 |
+|---|---:|---:|
+| A | 6/15 (40%) | 9/15 (60%) |
+| B | 14/15 (93,3%) | 15/15 (100%) |
+| C | 14/15 (93,3%) | 15/15 (100%) |
 
-## Kết luận tiến độ
+Tôi đã đối chiếu hash PDF, chunk và trace cũ, kiểm tra câu hỏi/filter của 45 trace rồi chấm từ cache. Do B và C hòa, tôi đã đo lại dev trên cùng snapshot và kiểm tra từng kết quả trùng trace cũ. Tổng thời gian gọi search của B là 35,93 ms, C là 34,60 ms trên 15 câu. Tôi đã chọn **C**, lưu quy tắc, điểm, thời gian và hash cấu hình lúc 20:28:49 giờ Việt Nam rồi mới chạy test. Lần chạy test kết thúc lúc 20:29:05 và ghi hash của khóa. Tôi giữ nguyên benchmark và tham số trong lần đánh giá này. [Quyết định trên dev](../../starter/results/checkpoint6/selection_lock.json) · [Kết quả test](../../starter/results/checkpoint6/test_summary.json)
 
-Tôi đã chuẩn bị corpus đủ 32 trang nội dung, ghi manifest nguồn/quyền và quy tắc tính trang, đồng thời có công cụ đọc hoạt động và kết quả kiểm tra nhất quán. Tôi đã xây và kiểm tra bộ 20 câu hỏi, cố định split 15 dev / 5 test và tiêu chí chọn cấu hình, đồng thời ghi giới hạn của benchmark. Tôi đã xuất và kiểm tra hai cấu hình chunk cùng log lỗi và metadata truy nguồn. Tôi đã hoàn thành checkpoint 1, 2, 3 và 5. Tôi chưa chạy retrieval trên 5 câu test, chưa chấm chất lượng hoặc chọn chiến lược thắng.
+| Test | Hit@1 | Evidence Hit@3 | Câu có evidence nguyên văn |
+|---|---:|---:|---|
+| A | 2/5 (40%) | 2/5 (40%) | q17, q19 |
+| B | 2/5 (40%) | 2/5 (40%) | q17, q18 |
+| C | 2/5 (40%) | 2/5 (40%) | q17, q18 |
+
+### Audit và phạm vi xác nhận
+
+| Chiến lược | Coherence theo student_score, tổng/10 và TB trên 2 | Metadata qua kiểm tra tự động | Câu đúng phạm vi filter (tự động) | Grounding theo student_score, số câu mức 0 / 1 / 2 | TB grounding trên 2 |
+|---|---|---:|---:|---:|---:|
+| A | 11/10 = 1,10 | 15/15 (100%) | 1/1 (100%) | 0 / 0 / 5 | 2,00 |
+| B | 12/10 = 1,20 | 15/15 (100%) | 1/1 (100%) | 1 / 1 / 3 | 1,40 |
+| C | 12/10 = 1,20 | 15/15 (100%) | 1/1 (100%) | 1 / 1 / 3 | 1,40 |
+
+Tôi đã cố định offset 0 trên mười trang vật lý đầu tiên (35–44) trước khi xem điểm. Codex đọc từng chunk chứa vị trí, xét chủ thể, ý bị cắt và khả năng tự hiểu theo thang GUIDE. Ví dụ ở trang 40, B giữ trọn mục mua sắm, còn A lấn sang mục stakeholder rồi cắt câu. Ở trang 42, A kết thúc ngay sau định nghĩa scope creep, B mở thêm một câu rồi bị ngắt. C dùng đúng chunk B ở cả mười vị trí. Mẫu đầu trang thiên về heading và hai chương đầu. [Vị trí đã chốt](../../starter/results/checkpoint6/coherence_positions.json) · [Text, nhãn và lý do từng chunk](../../starter/results/checkpoint6/coherence.jsonl)
+
+Tôi đã đối chiếu 45 hạng test theo ID tài liệu, đường dẫn, trang vật lý, trang in, page ID, chương, ngôn ngữ và loại tài liệu với manifest. Code kiểm tra nguyên văn tại offset trong trang chuẩn hóa và tìm một đoạn dẫn chứng trên trang PDF vật lý bằng pypdf. Codex đã đọc các đoạn đối chiếu theo trang và chương. Cả 45 bản ghi qua kiểm tra. Với q16, cả ba hạng của mỗi chiến lược thuộc chương 3. Chỉ C thực thi filter bằng SQL; kết quả A và B tự nằm trong phạm vi. B và C trả cùng top-3 ở cả năm câu. Trường section giúp giới hạn chương nhưng không phân biệt đoạn nói về kế hoạch nghiệm thu với đoạn nói về đóng dự án trong cùng chương. [Đối chiếu theo hạng và trích đoạn PDF](../../starter/results/checkpoint6/metadata.jsonl) · [Tổng hợp metadata](../../starter/results/checkpoint6/metadata_summary.json)
+
+Tôi đã dùng Codex đọc cùng năm câu, đáp án tham chiếu và cả ba đoạn theo thứ hạng cho mỗi cấu hình. Codex xét riêng việc các đoạn có nêu đúng đối tượng, điều kiện, thông tin cần trả lời và có thể dẫn nguồn. Điểm 0 là thiếu bằng chứng trả lời, 1 là có phần liên quan nhưng thiếu thông tin cần thiết, 2 là đủ và truy được nguồn. Tôi đã điền student_score cho đủ 30 mẫu coherence và 15 mẫu grounding; các giá trị hiện tại trùng với ai_score. Tôi tính bảng tổng hợp từ student_score và giữ điểm cùng lý do AI đề xuất để truy vết. Tôi không thực hiện thêm bước đối chiếu metadata với PDF thủ công cho bài demo. Các số metadata trong bảng chỉ phản ánh kiểm tra tự động, không phải xác nhận thủ công của tôi. Việc giữ điểm AI làm nhãn cuối có nguy cơ thiên lệch; các nhãn chưa được chấm độc lập bởi người chấm thứ hai. [Nhãn grounding, ID mẫu và lý do](../../starter/results/checkpoint6/grounding.jsonl)
+
+### Trường hợp sai và đánh đổi
+
+- **q16, Project Management, PDF 35.** A hạng 2 bắt đầu giữa từ nhưng vẫn nêu “acceptance plan” và công dụng. B/C lấy hai đoạn trang 36 về tiêu chí nghiệm thu và kết thúc dự án, rồi đoạn trang 35 liệt kê vòng đời. Cả ba trượt phép khớp nguyên câu. Grounding đề xuất A = 2, B/C = 1 vì hai cấu hình sau thiếu tên kế hoạch.
+- **q18, cùng sách, PDF 59.** A cắt điều kiện “Without a mitigating strategy” và khoảng giữa hai mùa mưa qua hai chunk. Đọc hai hạng đầu cùng nhau trả lời được, nhưng không chunk nào đủ gold. B/C giữ cả trường hợp Mumbai và điều kiện thời tiết ở hạng 1.
+- **q19, cùng sách, PDF 62.** A lấy đúng câu về potential return ở hạng 1. B/C lấy trang 55, 48 và 53 về thông báo rủi ro, giao tiếp và khái niệm stakeholder. Các trang này không giải đáp mối quan tâm tài chính. Với q20 (PDF 66), cả ba lấy đúng hai loại tín hiệu ở hạng 1 nhưng đều mất phần đầu câu gold.
+
+Tôi đã thấy đổi từ cửa sổ A sang heading/đoạn B tăng Evidence Hit@3 dev từ 9 lên 15 câu và coherence đề xuất tăng 0,10/2. B cần ít hơn 75 vector nhưng có thể xếp một đoạn chung trước câu trả lời cụ thể như q19. Metadata vẫn truy được nguồn ở cả hai. Từ B sang C chỉ thay filter, giữ cùng 131 vector, chất lượng chunk, grounding và độ đúng metadata trên mẫu test. Tôi chưa quan sát được lợi ích về Hit của filter trong hai bảng tổng hợp. Chỉ một câu test có filter; một câu test đổi trạng thái làm tỷ lệ đổi 20 điểm phần trăm. Dev/test cùng sách, cùng chương và có trang dùng chung, nên kết luận chỉ áp dụng cho mẫu này.
+
+### Thời gian và chi phí
+
+| Phạm vi đo | A | B | C |
+|---|---:|---:|---:|
+| Vector vật lý sử dụng | 206 | 131 | dùng lại 131 của B |
+| Embed / ghi lần build đầu (giây) | 5,640 / 0,087 | 3,972 / 0,062 | dùng lại B |
+| Tổng search 15 câu dev lúc phân xử (ms) | 60,00 | 35,93 | 34,60 |
+| Tổng search 5 câu test (ms) | 11,47 | 7,85 | 8,71 |
+
+Tôi đã đo thời gian search phía client quanh lời gọi pgvector, gồm chuẩn bị truy vấn, SQL, truyền và đọc kết quả. Mỗi câu embed một lần dùng chung, tổng riêng 338,29 ms trên dev và 102,46 ms trên test. Các số search loại thời gian embed, khởi tạo, kiểm tra snapshot, chấm và ghi file. Thứ tự chạy cố định A/B/C, C có thể hưởng cache sau B. Chênh lệch dev B–C chỉ khoảng 1,33 ms trong một lượt; trên test thứ tự thời gian đảo lại. Build đầu 10,29 s của checkpoint 5 là tổng cả pipeline. Phí API embedding/retrieval local là 0 USD; tôi chưa đo điện, khấu hao hay chi phí công cụ hỗ trợ chấm. [Build đầu](../../starter/results/checkpoint5_initial.json) · [Thời gian dev](../../starter/results/checkpoint6/selection_lock.json) · [Thời gian test](../../starter/results/checkpoint6/test_summary.json)
+
+Tôi đã chạy 23 unit test, gồm kiểm tra gold thay thế, xuống dòng, sai nguồn, sai trang và thiếu trích dẫn. Tôi chốt checkpoint 6 trong phạm vi demo với trace, điểm retrieval, khóa lựa chọn và student_score đã điền. Tôi chủ động bỏ qua đối chiếu metadata với PDF thủ công, nên chưa hoàn thành phần audit thủ công metadata theo GUIDE; tôi công bố giới hạn này thay vì coi kết quả tự động là xác nhận đầy đủ. [Log kiểm thử](../../starter/results/checkpoint6/unittest.log)

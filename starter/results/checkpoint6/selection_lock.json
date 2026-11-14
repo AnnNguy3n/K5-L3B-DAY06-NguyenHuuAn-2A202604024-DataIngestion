@@ -1,0 +1,85 @@
+{
+  "locked_utc": "2026-11-14T13:28:49.954436+00:00",
+  "selected": "C",
+  "rule": [
+    "max dev evidence_hit3",
+    "max dev hit1",
+    "min dev retrieval seconds (shared query embedding)",
+    "ascending strategy name"
+  ],
+  "metrics": {
+    "dev": {
+      "A": {
+        "hit1": {
+          "count": 6,
+          "total": 15,
+          "rate": 0.4
+        },
+        "evidence_hit3": {
+          "count": 9,
+          "total": 15,
+          "rate": 0.6
+        }
+      },
+      "B": {
+        "hit1": {
+          "count": 14,
+          "total": 15,
+          "rate": 0.9333333333333333
+        },
+        "evidence_hit3": {
+          "count": 15,
+          "total": 15,
+          "rate": 1.0
+        }
+      },
+      "C": {
+        "hit1": {
+          "count": 14,
+          "total": 15,
+          "rate": 0.9333333333333333
+        },
+        "evidence_hit3": {
+          "count": 15,
+          "total": 15,
+          "rate": 1.0
+        }
+      }
+    }
+  },
+  "dev_timing": {
+    "search_seconds": {
+      "A": 0.059998208984325174,
+      "B": 0.03593008498137351,
+      "C": 0.0346034580070409
+    },
+    "shared_query_embedding_seconds": 0.33828533399355365,
+    "local_api_usd": 0,
+    "electricity_hardware_cost": null
+  },
+  "sha256": {
+    "benchmark/questions.jsonl": "4ea4aa4671ad3325ee376c21f4c2ac198e8f80358596acfc98259772cc453194",
+    "BENCHMARK.md": "fe80131ad116c5480501f573dbbb67e2da875296e246988a58af8820d9235f20",
+    "data/manifest.json": "f42cee873f9e181a3fc03bbfb3d37b5760a5973734a4e552c5201fd5ca8b09cf",
+    "starter/results/checkpoint5_initial.json": "82a04d0c35ed3e088a2c49fb8d71ce0027b01853f716fb4e3dc3d32ddb618572",
+    "starter/results/dev_top3.jsonl": "6b8e55f06d6642f4e8c0d3765666ce0be36f877f72bae5742269f5d35f8deebe",
+    "starter/results/pages.jsonl": "5459070765d7a07ae137d91cdfc9c9d9cc1b5735a43e99ba0a36ac8d2fb2b0cb",
+    "starter/results/checkpoint6/coherence_positions.json": "6a1b2c70a41cecca62aeb52a3c122d114627edc9f29663854a6a6c6fc5aa3649",
+    "starter/results/chunks_A.jsonl": "2df93f4df9f07d30128bb4b34dfce12ffc3e1a3af05a037734668d5d976af412",
+    "starter/results/chunks_B.jsonl": "6e391fc4126a4da0101366e3e408ae9c3245c39c5748bb8b200145168ca8f3fb",
+    "data/raw/project-management.pdf": "8cef479b81c9b0837c3c09ce095d621be28b1ec874110c76f0b311484a7c667d",
+    "starter/src/embeddings.py": "8f561850da8a2d2e75fba859e63062521cfe4cbc585fc44ea5035d778b9bc63c",
+    "starter/src/store.py": "065b0c6bc96767f59dc964f4d5ccc31e66b4a7dd7270ddbf570f5df2e2d8576d",
+    "starter/src/evaluation.py": "381be71f908ec162d77eeb57f56e25539b31e11b32abcdb5768c6da6ef640e97",
+    "starter/scripts/checkpoint6.py": "357dc1d5f8995d62f1431d3174b28735654ba30e1c57be74e78118d133138642"
+  },
+  "top_k": 3,
+  "metric": "cosine",
+  "model": "embeddinggemma-2:740m-mxfp8",
+  "dimensions": 768,
+  "physical_indexes": {
+    "A": "A",
+    "B": "B",
+    "C": "B"
+  }
+}

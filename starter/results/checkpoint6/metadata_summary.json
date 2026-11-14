@@ -1,0 +1,23 @@
+{
+  "A": {
+    "correct": 15,
+    "total": 15,
+    "filter_pass": 1,
+    "filter_total": 1,
+    "filter_rate": 1.0
+  },
+  "B": {
+    "correct": 15,
+    "total": 15,
+    "filter_pass": 1,
+    "filter_total": 1,
+    "filter_rate": 1.0
+  },
+  "C": {
+    "correct": 15,
+    "total": 15,
+    "filter_pass": 1,
+    "filter_total": 1,
+    "filter_rate": 1.0
+  }
+}

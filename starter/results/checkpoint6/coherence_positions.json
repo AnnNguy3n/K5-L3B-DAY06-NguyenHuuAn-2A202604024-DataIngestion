@@ -1,0 +1,56 @@
+{
+  "created_utc": "2026-11-14T13:27:33.383120+00:00",
+  "rule": "First ten physical pages sorted numerically; character zero; use the first chunk covering it. C uses B.",
+  "positions": [
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 35,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 36,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 37,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 38,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 39,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 40,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 41,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 42,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 43,
+      "offset": 0
+    },
+    {
+      "document_id": "project-management-2019-v1.03",
+      "page": 44,
+      "offset": 0
+    }
+  ]
+}

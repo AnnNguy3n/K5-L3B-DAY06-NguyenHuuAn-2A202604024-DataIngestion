@@ -1,0 +1,52 @@
+{
+  "test": {
+    "A": {
+      "hit1": {
+        "count": 2,
+        "total": 5,
+        "rate": 0.4
+      },
+      "evidence_hit3": {
+        "count": 2,
+        "total": 5,
+        "rate": 0.4
+      }
+    },
+    "B": {
+      "hit1": {
+        "count": 2,
+        "total": 5,
+        "rate": 0.4
+      },
+      "evidence_hit3": {
+        "count": 2,
+        "total": 5,
+        "rate": 0.4
+      }
+    },
+    "C": {
+      "hit1": {
+        "count": 2,
+        "total": 5,
+        "rate": 0.4
+      },
+      "evidence_hit3": {
+        "count": 2,
+        "total": 5,
+        "rate": 0.4
+      }
+    }
+  },
+  "timing": {
+    "search_seconds": {
+      "A": 0.01146554300794378,
+      "B": 0.00784937300340971,
+      "C": 0.008709374007594306
+    },
+    "shared_query_embedding_seconds": 0.10245858399866847,
+    "local_api_usd": 0,
+    "electricity_hardware_cost": null
+  },
+  "lock_sha256": "aa2cf379761b6933dba4b48f4226997367039ec54c65747439a6123799b2aab0",
+  "finished_utc": "2026-11-14T13:29:05.021114+00:00"
+}

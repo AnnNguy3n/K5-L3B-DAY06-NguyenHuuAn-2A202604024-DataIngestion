@@ -94,3 +94,20 @@ nhân đôi. Khi nạp vector sau này, upsert ID hiện có và xóa chunk cũ 
 trong lần xuất mới.
 
 A và B truy vấn toàn bộ chunk của từng chiến lược. C dùng cùng chunk/vector B và lọc trong SQL theo metadata của câu hỏi.
+
+## Checkpoint 6
+
+Tôi chốt kết quả checkpoint 6 trong phạm vi demo. Tôi đã điền đủ student_score cho 30 mẫu coherence và 15 mẫu grounding; bảng báo cáo dùng các giá trị này và giữ ai_score để truy vết. Tôi bỏ qua đối chiếu metadata với PDF thủ công. metadata.jsonl và metadata_summary.json chỉ phản ánh kiểm tra tự động, chưa phải audit thủ công hoàn chỉnh theo GUIDE.
+
+Chạy từ gốc repo với môi trường, Ollama và bảng checkpoint 5 ở trên. Các kết quả đã lưu nằm trong `starter/results/checkpoint6/`. Hai lệnh đầu tương ứng hai giai đoạn, theo thứ tự sau.
+
+```bash
+starter/.venv/bin/python -m starter.scripts.checkpoint6 select
+starter/.venv/bin/python -m starter.scripts.checkpoint6 test
+starter/.venv/bin/python -m starter.scripts.audit_metadata
+starter/.venv/bin/python -m unittest discover -s tests -v
+```
+
+Trên repo đã có khóa, bỏ qua lệnh select. Lệnh test kiểm tra hash đã khóa rồi ghi lại test_scored.jsonl và test_summary.json (gồm thời gian của lần mới). Để tái lập toàn bộ trong bản sao riêng, giữ coherence_positions.json và chuyển selection_lock.json của bản sao sang tên khác trước khi chạy select. Lưu riêng minh chứng gốc vì phân xử bằng thời gian có thể đổi giữa các lần chạy. Select chấm trace dev checkpoint 5 và chỉ truy vấn lại dev khi hai chỉ số hòa. Test truy vấn SQL trên snapshot chỉ đọc với cùng model, chiều và metric.
+
+Mỗi dòng trace chứa đúng một câu và một chiến lược. Đối chiếu gold chính hoặc thay thế với document_id, page và trích dẫn đầy đủ sau chuẩn hóa whitespace. Audit metadata kiểm tra phạm vi đã yêu cầu trên cả A/B/C, lưu null nếu mẫu số filter bằng 0. Học viên đọc nguyên chunk trong coherence.jsonl và cả ba hạng của test_scored.jsonl tương ứng từng dòng grounding.jsonl để rà lý do và điền student_score. Khi chạy lại trên dữ liệu khác, các nhãn đọc mẫu cần được đối chiếu lại với ID và nội dung.
