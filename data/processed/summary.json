@@ -1,0 +1,18 @@
+{
+  "corpus_id": "project-management-foundations",
+  "manifest_sha256": "f42cee873f9e181a3fc03bbfb3d37b5760a5973734a4e552c5201fd5ca8b09cf",
+  "extractor": "pypdf",
+  "extractor_version": "6.21.4",
+  "expected_pages": 32,
+  "saved_pages": 32,
+  "error_count": 0,
+  "total_normalized_char_count": 87887,
+  "status": "complete",
+  "ocr_used": false,
+  "vision_model": "mimo-v2.6:9b-mxfp8",
+  "figure_extraction_method": "local_vlm_on_embedded_images",
+  "image_count": 3,
+  "saved_figures": 3,
+  "total_text_only_char_count": 85519,
+  "note": "Manifest text counts/hashes apply to text_only; merged text has separate counts/hashes in pages.jsonl."
+}

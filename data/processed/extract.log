@@ -1,0 +1,143 @@
+2026-11-14 15:16:11 | INFO | START | manifest=/Users/annnguy3n/Desktop/K5-L3B-DAY06-NguyenHuuAn-2A202604024-DataIngestion/data/manifest.json | model=mimo-v2.6:9b-mxfp8 | output=/Users/annnguy3n/Desktop/K5-L3B-DAY06-NguyenHuuAn-2A202604024-DataIngestion/data/processed
+2026-11-14 15:16:11 | INFO | Corpus project-management-foundations | selected pages=32
+2026-11-14 15:16:11 | INFO | Source project-management-2019-v1.03 | validating PDF snapshot
+2026-11-14 15:16:11 | INFO | [1/32] project-management-2019-v1.03 | PDF page 35 | START
+2026-11-14 15:16:11 | INFO | [1/32] project-management-2019-v1.03 | PDF page 35 | text OK | normalized characters=3366
+2026-11-14 15:16:11 | INFO | [1/32] project-management-2019-v1.03 | PDF page 35 | images detected=0
+2026-11-14 15:16:11 | INFO | [1/32] project-management-2019-v1.03 | PDF page 35 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:11 | INFO | [2/32] project-management-2019-v1.03 | PDF page 36 | START
+2026-11-14 15:16:11 | INFO | [2/32] project-management-2019-v1.03 | PDF page 36 | text OK | normalized characters=3588
+2026-11-14 15:16:11 | INFO | [2/32] project-management-2019-v1.03 | PDF page 36 | images detected=0
+2026-11-14 15:16:11 | INFO | [2/32] project-management-2019-v1.03 | PDF page 36 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:11 | INFO | [3/32] project-management-2019-v1.03 | PDF page 37 | START
+2026-11-14 15:16:11 | INFO | [3/32] project-management-2019-v1.03 | PDF page 37 | text OK | normalized characters=1614
+2026-11-14 15:16:12 | INFO | [3/32] project-management-2019-v1.03 | PDF page 37 | images detected=0
+2026-11-14 15:16:12 | INFO | [3/32] project-management-2019-v1.03 | PDF page 37 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:12 | INFO | [4/32] project-management-2019-v1.03 | PDF page 38 | START
+2026-11-14 15:16:12 | INFO | [4/32] project-management-2019-v1.03 | PDF page 38 | text OK | normalized characters=3704
+2026-11-14 15:16:12 | INFO | [4/32] project-management-2019-v1.03 | PDF page 38 | images detected=0
+2026-11-14 15:16:12 | INFO | [4/32] project-management-2019-v1.03 | PDF page 38 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:12 | INFO | [5/32] project-management-2019-v1.03 | PDF page 39 | START
+2026-11-14 15:16:12 | INFO | [5/32] project-management-2019-v1.03 | PDF page 39 | text OK | normalized characters=3161
+2026-11-14 15:16:12 | INFO | [5/32] project-management-2019-v1.03 | PDF page 39 | images detected=0
+2026-11-14 15:16:12 | INFO | [5/32] project-management-2019-v1.03 | PDF page 39 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:12 | INFO | [6/32] project-management-2019-v1.03 | PDF page 40 | START
+2026-11-14 15:16:12 | INFO | [6/32] project-management-2019-v1.03 | PDF page 40 | text OK | normalized characters=1683
+2026-11-14 15:16:12 | INFO | [6/32] project-management-2019-v1.03 | PDF page 40 | images detected=1
+2026-11-14 15:16:12 | INFO | [6/32] project-management-2019-v1.03 | PDF page 40 | image [1/1] I13.jpg | START
+2026-11-14 15:16:12 | INFO | Ollama | checking local model mimo-v2.6:9b-mxfp8 and vision capability
+2026-11-14 15:16:12 | INFO | Image I13.jpg | cache MISS | calling Ollama model=mimo-v2.6:9b-mxfp8 | timeout=300s
+2026-11-14 15:16:21 | INFO | [6/32] project-management-2019-v1.03 | PDF page 40 | image I13.jpg | OK | elapsed=8.97s
+2026-11-14 15:16:21 | INFO | [6/32] project-management-2019-v1.03 | PDF page 40 | OK | saved | figures=1 | elapsed=9.02s
+2026-11-14 15:16:21 | INFO | [7/32] project-management-2019-v1.03 | PDF page 41 | START
+2026-11-14 15:16:21 | INFO | [7/32] project-management-2019-v1.03 | PDF page 41 | text OK | normalized characters=3491
+2026-11-14 15:16:21 | INFO | [7/32] project-management-2019-v1.03 | PDF page 41 | images detected=0
+2026-11-14 15:16:21 | INFO | [7/32] project-management-2019-v1.03 | PDF page 41 | OK | saved | figures=0 | elapsed=0.04s
+2026-11-14 15:16:21 | INFO | [8/32] project-management-2019-v1.03 | PDF page 42 | START
+2026-11-14 15:16:21 | INFO | [8/32] project-management-2019-v1.03 | PDF page 42 | text OK | normalized characters=4013
+2026-11-14 15:16:21 | INFO | [8/32] project-management-2019-v1.03 | PDF page 42 | images detected=0
+2026-11-14 15:16:21 | INFO | [8/32] project-management-2019-v1.03 | PDF page 42 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:21 | INFO | [9/32] project-management-2019-v1.03 | PDF page 43 | START
+2026-11-14 15:16:21 | INFO | [9/32] project-management-2019-v1.03 | PDF page 43 | text OK | normalized characters=4027
+2026-11-14 15:16:21 | INFO | [9/32] project-management-2019-v1.03 | PDF page 43 | images detected=0
+2026-11-14 15:16:21 | INFO | [9/32] project-management-2019-v1.03 | PDF page 43 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:21 | INFO | [10/32] project-management-2019-v1.03 | PDF page 44 | START
+2026-11-14 15:16:21 | INFO | [10/32] project-management-2019-v1.03 | PDF page 44 | text OK | normalized characters=4158
+2026-11-14 15:16:21 | INFO | [10/32] project-management-2019-v1.03 | PDF page 44 | images detected=0
+2026-11-14 15:16:21 | INFO | [10/32] project-management-2019-v1.03 | PDF page 44 | OK | saved | figures=0 | elapsed=0.05s
+2026-11-14 15:16:21 | INFO | [11/32] project-management-2019-v1.03 | PDF page 45 | START
+2026-11-14 15:16:21 | INFO | [11/32] project-management-2019-v1.03 | PDF page 45 | text OK | normalized characters=4238
+2026-11-14 15:16:21 | INFO | [11/32] project-management-2019-v1.03 | PDF page 45 | images detected=0
+2026-11-14 15:16:21 | INFO | [11/32] project-management-2019-v1.03 | PDF page 45 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:21 | INFO | [12/32] project-management-2019-v1.03 | PDF page 46 | START
+2026-11-14 15:16:21 | INFO | [12/32] project-management-2019-v1.03 | PDF page 46 | text OK | normalized characters=3839
+2026-11-14 15:16:21 | INFO | [12/32] project-management-2019-v1.03 | PDF page 46 | images detected=0
+2026-11-14 15:16:21 | INFO | [12/32] project-management-2019-v1.03 | PDF page 46 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:21 | INFO | [13/32] project-management-2019-v1.03 | PDF page 47 | START
+2026-11-14 15:16:21 | INFO | [13/32] project-management-2019-v1.03 | PDF page 47 | text OK | normalized characters=3993
+2026-11-14 15:16:21 | INFO | [13/32] project-management-2019-v1.03 | PDF page 47 | images detected=0
+2026-11-14 15:16:21 | INFO | [13/32] project-management-2019-v1.03 | PDF page 47 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:21 | INFO | [14/32] project-management-2019-v1.03 | PDF page 48 | START
+2026-11-14 15:16:21 | INFO | [14/32] project-management-2019-v1.03 | PDF page 48 | text OK | normalized characters=589
+2026-11-14 15:16:21 | INFO | [14/32] project-management-2019-v1.03 | PDF page 48 | images detected=0
+2026-11-14 15:16:21 | INFO | [14/32] project-management-2019-v1.03 | PDF page 48 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:21 | INFO | [15/32] project-management-2019-v1.03 | PDF page 49 | START
+2026-11-14 15:16:21 | INFO | [15/32] project-management-2019-v1.03 | PDF page 49 | text OK | normalized characters=612
+2026-11-14 15:16:21 | INFO | [15/32] project-management-2019-v1.03 | PDF page 49 | images detected=0
+2026-11-14 15:16:21 | INFO | [15/32] project-management-2019-v1.03 | PDF page 49 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:21 | INFO | [16/32] project-management-2019-v1.03 | PDF page 50 | START
+2026-11-14 15:16:21 | INFO | [16/32] project-management-2019-v1.03 | PDF page 50 | text OK | normalized characters=2510
+2026-11-14 15:16:21 | INFO | [16/32] project-management-2019-v1.03 | PDF page 50 | images detected=0
+2026-11-14 15:16:21 | INFO | [16/32] project-management-2019-v1.03 | PDF page 50 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:21 | INFO | [17/32] project-management-2019-v1.03 | PDF page 51 | START
+2026-11-14 15:16:21 | INFO | [17/32] project-management-2019-v1.03 | PDF page 51 | text OK | normalized characters=3136
+2026-11-14 15:16:21 | INFO | [17/32] project-management-2019-v1.03 | PDF page 51 | images detected=0
+2026-11-14 15:16:21 | INFO | [17/32] project-management-2019-v1.03 | PDF page 51 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:21 | INFO | [18/32] project-management-2019-v1.03 | PDF page 52 | START
+2026-11-14 15:16:21 | INFO | [18/32] project-management-2019-v1.03 | PDF page 52 | text OK | normalized characters=467
+2026-11-14 15:16:21 | INFO | [18/32] project-management-2019-v1.03 | PDF page 52 | images detected=0
+2026-11-14 15:16:21 | INFO | [18/32] project-management-2019-v1.03 | PDF page 52 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:21 | INFO | [19/32] project-management-2019-v1.03 | PDF page 53 | START
+2026-11-14 15:16:21 | INFO | [19/32] project-management-2019-v1.03 | PDF page 53 | text OK | normalized characters=2393
+2026-11-14 15:16:21 | INFO | [19/32] project-management-2019-v1.03 | PDF page 53 | images detected=0
+2026-11-14 15:16:21 | INFO | [19/32] project-management-2019-v1.03 | PDF page 53 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:21 | INFO | [20/32] project-management-2019-v1.03 | PDF page 54 | START
+2026-11-14 15:16:21 | INFO | [20/32] project-management-2019-v1.03 | PDF page 54 | text OK | normalized characters=1560
+2026-11-14 15:16:21 | INFO | [20/32] project-management-2019-v1.03 | PDF page 54 | images detected=1
+2026-11-14 15:16:21 | INFO | [20/32] project-management-2019-v1.03 | PDF page 54 | image [1/1] I14.jpg | START
+2026-11-14 15:16:21 | INFO | Image I14.jpg | cache MISS | calling Ollama model=mimo-v2.6:9b-mxfp8 | timeout=300s
+2026-11-14 15:16:28 | INFO | [20/32] project-management-2019-v1.03 | PDF page 54 | image I14.jpg | OK | elapsed=7.33s
+2026-11-14 15:16:28 | INFO | [20/32] project-management-2019-v1.03 | PDF page 54 | OK | saved | figures=1 | elapsed=7.35s
+2026-11-14 15:16:28 | INFO | [21/32] project-management-2019-v1.03 | PDF page 55 | START
+2026-11-14 15:16:28 | INFO | [21/32] project-management-2019-v1.03 | PDF page 55 | text OK | normalized characters=2216
+2026-11-14 15:16:28 | INFO | [21/32] project-management-2019-v1.03 | PDF page 55 | images detected=0
+2026-11-14 15:16:28 | INFO | [21/32] project-management-2019-v1.03 | PDF page 55 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:28 | INFO | [22/32] project-management-2019-v1.03 | PDF page 56 | START
+2026-11-14 15:16:28 | INFO | [22/32] project-management-2019-v1.03 | PDF page 56 | text OK | normalized characters=2416
+2026-11-14 15:16:28 | INFO | [22/32] project-management-2019-v1.03 | PDF page 56 | images detected=0
+2026-11-14 15:16:28 | INFO | [22/32] project-management-2019-v1.03 | PDF page 56 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:28 | INFO | [23/32] project-management-2019-v1.03 | PDF page 57 | START
+2026-11-14 15:16:28 | INFO | [23/32] project-management-2019-v1.03 | PDF page 57 | text OK | normalized characters=2091
+2026-11-14 15:16:28 | INFO | [23/32] project-management-2019-v1.03 | PDF page 57 | images detected=0
+2026-11-14 15:16:28 | INFO | [23/32] project-management-2019-v1.03 | PDF page 57 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:28 | INFO | [24/32] project-management-2019-v1.03 | PDF page 58 | START
+2026-11-14 15:16:28 | INFO | [24/32] project-management-2019-v1.03 | PDF page 58 | text OK | normalized characters=2278
+2026-11-14 15:16:28 | INFO | [24/32] project-management-2019-v1.03 | PDF page 58 | images detected=0
+2026-11-14 15:16:28 | INFO | [24/32] project-management-2019-v1.03 | PDF page 58 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:28 | INFO | [25/32] project-management-2019-v1.03 | PDF page 59 | START
+2026-11-14 15:16:28 | INFO | [25/32] project-management-2019-v1.03 | PDF page 59 | text OK | normalized characters=2685
+2026-11-14 15:16:28 | INFO | [25/32] project-management-2019-v1.03 | PDF page 59 | images detected=0
+2026-11-14 15:16:28 | INFO | [25/32] project-management-2019-v1.03 | PDF page 59 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:28 | INFO | [26/32] project-management-2019-v1.03 | PDF page 60 | START
+2026-11-14 15:16:28 | INFO | [26/32] project-management-2019-v1.03 | PDF page 60 | text OK | normalized characters=3356
+2026-11-14 15:16:28 | INFO | [26/32] project-management-2019-v1.03 | PDF page 60 | images detected=0
+2026-11-14 15:16:28 | INFO | [26/32] project-management-2019-v1.03 | PDF page 60 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:28 | INFO | [27/32] project-management-2019-v1.03 | PDF page 61 | START
+2026-11-14 15:16:28 | INFO | [27/32] project-management-2019-v1.03 | PDF page 61 | text OK | normalized characters=3125
+2026-11-14 15:16:28 | INFO | [27/32] project-management-2019-v1.03 | PDF page 61 | images detected=0
+2026-11-14 15:16:28 | INFO | [27/32] project-management-2019-v1.03 | PDF page 61 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:28 | INFO | [28/32] project-management-2019-v1.03 | PDF page 62 | START
+2026-11-14 15:16:28 | INFO | [28/32] project-management-2019-v1.03 | PDF page 62 | text OK | normalized characters=3045
+2026-11-14 15:16:28 | INFO | [28/32] project-management-2019-v1.03 | PDF page 62 | images detected=0
+2026-11-14 15:16:28 | INFO | [28/32] project-management-2019-v1.03 | PDF page 62 | OK | saved | figures=0 | elapsed=0.02s
+2026-11-14 15:16:28 | INFO | [29/32] project-management-2019-v1.03 | PDF page 63 | START
+2026-11-14 15:16:28 | INFO | [29/32] project-management-2019-v1.03 | PDF page 63 | text OK | normalized characters=1135
+2026-11-14 15:16:28 | INFO | [29/32] project-management-2019-v1.03 | PDF page 63 | images detected=1
+2026-11-14 15:16:28 | INFO | [29/32] project-management-2019-v1.03 | PDF page 63 | image [1/1] I15.jpg | START
+2026-11-14 15:16:28 | INFO | Image I15.jpg | cache MISS | calling Ollama model=mimo-v2.6:9b-mxfp8 | timeout=300s
+2026-11-14 15:16:37 | INFO | [29/32] project-management-2019-v1.03 | PDF page 63 | image I15.jpg | OK | elapsed=8.65s
+2026-11-14 15:16:37 | INFO | [29/32] project-management-2019-v1.03 | PDF page 63 | OK | saved | figures=1 | elapsed=8.66s
+2026-11-14 15:16:37 | INFO | [30/32] project-management-2019-v1.03 | PDF page 65 | START
+2026-11-14 15:16:37 | INFO | [30/32] project-management-2019-v1.03 | PDF page 65 | text OK | normalized characters=2615
+2026-11-14 15:16:37 | INFO | [30/32] project-management-2019-v1.03 | PDF page 65 | images detected=0
+2026-11-14 15:16:37 | INFO | [30/32] project-management-2019-v1.03 | PDF page 65 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:37 | INFO | [31/32] project-management-2019-v1.03 | PDF page 66 | START
+2026-11-14 15:16:37 | INFO | [31/32] project-management-2019-v1.03 | PDF page 66 | text OK | normalized characters=3270
+2026-11-14 15:16:37 | INFO | [31/32] project-management-2019-v1.03 | PDF page 66 | images detected=0
+2026-11-14 15:16:37 | INFO | [31/32] project-management-2019-v1.03 | PDF page 66 | OK | saved | figures=0 | elapsed=0.03s
+2026-11-14 15:16:37 | INFO | [32/32] project-management-2019-v1.03 | PDF page 67 | START
+2026-11-14 15:16:37 | INFO | [32/32] project-management-2019-v1.03 | PDF page 67 | text OK | normalized characters=1145
+2026-11-14 15:16:37 | INFO | [32/32] project-management-2019-v1.03 | PDF page 67 | images detected=0
+2026-11-14 15:16:37 | INFO | [32/32] project-management-2019-v1.03 | PDF page 67 | OK | saved | figures=0 | elapsed=0.01s
+2026-11-14 15:16:37 | INFO | RESULT | status=complete | saved pages=32/32 | images=3 | saved figures=3 | errors=0
+2026-11-14 15:16:37 | INFO | END | elapsed=25.69s

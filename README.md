@@ -8,6 +8,21 @@ Biến tài liệu thành kho tri thức có thể truy xuất cho AI agent, r�
 |---|---|---|
 | Tối thiểu **30 trang nội dung** | Tối thiểu **3 cấu hình** | Tối thiểu **20 câu hỏi** |
 
+## Tiến độ bài làm cá nhân
+
+Tôi đã hoàn thành checkpoint 1 — chọn dữ liệu và thiết lập công cụ đọc corpus — ngày 14/11/2026. Tôi sử dụng 32 trang nội dung từ sách *Project Management* của Adrienne Watt (BCcampus); nguồn, giấy phép, snapshot và quy tắc tính trang được ghi trong [manifest](data/manifest.json).
+
+Tôi đã lưu kết quả đọc trong [data/processed/](data/processed/), gồm 32 trang, log lỗi và thống kê. Cách cài đặt, chạy lại và yêu cầu model local được ghi trong [data/README.md](data/README.md). Báo cáo tiến độ nằm tại [báo cáo cá nhân](report/individual/2A202604024_NguyenHuuAn.md).
+
+Các lệnh kiểm tra tôi sử dụng từ thư mục gốc repo, sau khi cài dependencies:
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 scripts/read_corpus.py
+```
+
+Lệnh đọc corpus cần Ollama và model vision local như mô tả trong hướng dẫn dữ liệu. Các test dùng mock cho phản hồi VLM và ghi kết quả vào thư mục tạm, không thay thế kết quả corpus thật. Tôi chưa hoàn thành benchmark, chunking, embedding và vector retrieval ở checkpoint này.
+
 ## Bắt đầu nhanh
 
 Dùng [starter PostgreSQL + pgvector](starter/README.md) để dựng database và hoàn thiện các hàm TODO, hoặc tự chọn vector store tương đương. Starter chỉ là khung: **bạn tự hiện thực pipeline và benchmark**.
