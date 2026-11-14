@@ -4,7 +4,7 @@
 - MSSV: 2A202604024
 - Lớp: L3B
 - Ngày cập nhật: 14/11/2026
-- Phạm vi báo cáo: Hoàn thành checkpoint 1 — chọn dữ liệu và setup. Đây là báo cáo tiến độ, chưa phải báo cáo kết quả cuối bài.
+- Phạm vi báo cáo: Hoàn thành checkpoint 1 — chọn dữ liệu và setup — và checkpoint 2 — xây benchmark. Đây là báo cáo tiến độ, chưa phải báo cáo kết quả cuối bài.
 
 ## Dữ liệu và pipeline
 
@@ -55,9 +55,25 @@ Tôi kiểm tra lại 32 trang bằng pypdf và đối chiếu với kết quả
 
 ## Cấu hình và benchmark
 
-Tôi chưa xây bộ 20 câu hỏi và chưa chia dev/test. Tôi chưa chốt tham số A/B/C, embedding model, số chiều hoặc tiêu chí chọn cấu hình. Nhật ký `artifacts/experiment_log.csv` giữ nguyên các ô kết quả trống vì tôi chưa chạy thí nghiệm retrieval.
+Tôi đã xây [20 câu hỏi tiếng Anh](../../benchmark/questions.jsonl) từ corpus Project Management. Mỗi câu có ID, split, question, expected_answer, gold_source_id, gold_page, evidence_quote và filter. Tôi dùng số trang vật lý PDF bắt đầu từ 1.
 
-Bước tiếp theo của tôi là xây benchmark có evidence được xác minh, chia tối thiểu 15 dev / 5 test trước khi thử retrieval, gồm ít nhất 3 câu filter và ít nhất 1 câu filter thuộc test.
+| Kết quả checkpoint 2 | Giá trị thực tế |
+|---|---|
+| Số câu / số ID riêng biệt | 20 / 20 |
+| Dev | 15 câu, q01–q15 |
+| Test | 5 câu, q16–q20 |
+| Câu filter trên dev | q01, q04, q11, q14 |
+| Câu filter trên test | q16 |
+| Evidence chính khớp text PDF và corpus | 20 / 20 |
+| Evidence thay thế đã đối chiếu | 1 / 1, q11 tại trang PDF 53 |
+
+Tôi dùng filter `section` với giá trị được xác định từ chương nêu trong câu hỏi. Tôi đã kiểm tra các giá trị tồn tại trong metadata và khớp trang nguồn, kể cả evidence thay thế. Các câu không yêu cầu phạm vi chương dùng filter rỗng. Tôi không đưa gold source hoặc đáp án vào truy vấn/filter; evidence đều đến từ text PDF, không dựa vào phần hình do VLM sinh.
+
+Tôi chia tập ở cấp câu hỏi, giữ các chủ đề trong cả dev và test. Hai tập dùng chung sách và các chương; q01 và q16 cùng có gold ở trang PDF 35 nhưng hỏi hai nội dung khác nhau. Tôi ghi nhận nguy cơ chia sẻ ngữ cảnh giữa hai tập; test không độc lập theo tài liệu/chủ đề và chỉ minh họa kết quả trong corpus này.
+
+Tôi cố định benchmark và tiêu chí chọn cấu hình trước bước thử retrieval: ưu tiên Evidence Hit@3 trên dev, tiếp theo Hit@1 trên dev, tiếp theo tổng thời gian truy xuất 15 câu dev trong cùng điều kiện; nếu vẫn hòa, chọn cấu hình đứng trước theo tên. Tôi chỉ dùng dev để điều chỉnh, khóa cấu hình trước khi đánh giá test và chỉ dùng kết quả test để báo cáo. Chi tiết nằm trong [BENCHMARK.md](../../BENCHMARK.md).
+
+Tôi chưa chốt tham số A/B/C, embedding model hoặc số chiều. Nhật ký `artifacts/experiment_log.csv` giữ nguyên các ô kết quả trống vì tôi chưa chạy thí nghiệm retrieval. Bước tiếp theo của tôi là xử lý cấu trúc đoạn và triển khai hai cấu hình chunk, đồng thời giữ truy vết nguồn/trang.
 
 ## Kết quả retrieval và audit
 
@@ -65,8 +81,8 @@ Tôi chưa có Hit@1, Evidence Hit@3, chunk count, nhãn coherence, audit metada
 
 ## Công cụ AI và cách kiểm tra
 
-Tôi sử dụng Codex để hỗ trợ giải thích yêu cầu, review code, kiểm tra tính nhất quán dữ liệu và cập nhật báo cáo tiến độ. Tôi sử dụng Ollama với model vision local để trích nội dung hình. Tôi lưu nguồn và output để đối chiếu, chạy test và kiểm tra hash; tôi không coi phản hồi AI là gold evidence khi chưa xác minh với tài liệu gốc.
+Tôi sử dụng Codex để hỗ trợ giải thích yêu cầu, review code, đối chiếu bộ câu hỏi với yêu cầu benchmark, kiểm tra evidence và tính nhất quán dữ liệu, đồng thời cập nhật báo cáo tiến độ. Tôi sử dụng Ollama với model vision local để trích nội dung hình. Tôi lưu nguồn và output để đối chiếu, chạy test và kiểm tra hash; tôi không coi phản hồi AI là gold evidence khi chưa xác minh với tài liệu gốc.
 
 ## Kết luận tiến độ
 
-Tôi đã chuẩn bị corpus đủ 32 trang nội dung, ghi manifest nguồn/quyền và quy tắc tính trang, đồng thời có công cụ đọc hoạt động và kết quả kiểm tra nhất quán. Tôi hoàn thành checkpoint 1; các phần benchmark, chunking, embedding, lưu vector và đánh giá thuộc các bước tiếp theo.
+Tôi đã chuẩn bị corpus đủ 32 trang nội dung, ghi manifest nguồn/quyền và quy tắc tính trang, đồng thời có công cụ đọc hoạt động và kết quả kiểm tra nhất quán. Tôi đã xây và kiểm tra bộ 20 câu hỏi, cố định split 15 dev / 5 test và tiêu chí chọn cấu hình, đồng thời ghi giới hạn của benchmark. Tôi hoàn thành checkpoint 1 và checkpoint 2; chunking, embedding, lưu vector và đánh giá retrieval thuộc các bước tiếp theo.

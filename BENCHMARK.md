@@ -21,3 +21,19 @@ Mỗi câu ghi: `id`, `split`, `question`, `expected_answer`, `gold_source_id`, 
 Trước khi chạy, kiểm chứng evidence tồn tại ở nguồn và đủ hỗ trợ đáp án, kể cả điều kiện/ngoại lệ. Nếu nhiều nguồn hoặc trang hợp lệ, ghi tất cả và chấp nhận một trong số đó. Không đưa đáp án hoặc gold source vào query/filter; giá trị filter phải được người dùng hoặc ngữ cảnh cung cấp **trước khi truy xuất**. Với câu không có filter, cấu hình C chạy không filter cho câu đó và ghi rõ. Không dùng câu không có đáp án trong nguồn cho chỉ số bắt buộc.
 
 Filter cần dựa vào metadata đáng tin, ví dụ `year`, `section`, `category`, `audience`, `language` hoặc `version`. Chọn corpus có ít nhất hai phạm vi phân biệt được; không tạo giá trị giả để filter đạt điểm. Xem [data/format-example.json](data/format-example.json) để tham khảo cấu trúc, không phải benchmark hoàn chỉnh.
+
+## Quy tắc chọn cấu hình cho corpus Project Management
+
+Cố định trước khi chạy: q01–q15 là dev, q16–q20 là test. Hai tập đều có câu nêu rõ chương để kiểm tra filter. Chọn cấu hình theo thứ tự: Evidence Hit@3 cao nhất trên dev, rồi Hit@1 cao nhất trên dev, rồi tổng thời gian truy xuất 15 câu dev thấp nhất trong cùng điều kiện. Nếu vẫn hòa, chọn cấu hình đứng trước theo tên. Khóa cấu hình trước khi đánh giá test và chỉ dùng kết quả test để báo cáo.
+
+Trong `benchmark/questions.jsonl`, trang được đếm từ 1 theo thứ tự vật lý của PDF. Filter rỗng áp dụng cho toàn corpus. Khi có `accepted_alternatives`, mỗi mục bổ sung một bộ nguồn, trang và trích dẫn có giá trị ngang với gold chính.
+
+## Cách chia tập và giới hạn của benchmark cá nhân
+
+Tôi xây 20 câu hỏi tiếng Anh trong [benchmark/questions.jsonl](benchmark/questions.jsonl), chia ở cấp câu hỏi: q01–q15 thuộc dev và q16–q20 thuộc test. Tôi giữ các chủ đề xuất hiện trong cả hai tập để đánh giá trên phạm vi chương 3–6 của cùng corpus. Cả hai tập dùng chung sách và các chương; q01 và q16 cùng lấy bằng chứng ở trang PDF 35 nhưng hỏi hai nội dung khác nhau. Vì vậy, test không độc lập theo tài liệu hoặc chủ đề, có nguy cơ chia sẻ ngữ cảnh với dev và không đại diện cho khả năng tổng quát hóa sang tài liệu mới.
+
+Tôi cố định bộ câu hỏi, split và tiêu chí chọn cấu hình tại checkpoint 2, trước bước thử retrieval. Tôi chỉ dùng dev để điều chỉnh tham số; sau khi khóa cấu hình, tôi dùng test để báo cáo. Việc kiểm tra gold trước khi chạy nhằm xác minh benchmark, không phải dùng kết quả retrieval trên test để tinh chỉnh.
+
+Tôi có 5 câu dùng filter `section`: q01, q04, q11, q14 thuộc dev và q16 thuộc test. Mỗi câu nêu rõ chương trong câu hỏi; filter là đầu vào phạm vi được xác định trước retrieval, không suy ra từ gold. Với 15 câu còn lại, tôi dùng filter rỗng và chạy cấu hình C không lọc. Tôi giữ cùng corpus, model và bộ câu hỏi cho A/B/C.
+
+Tôi đã đối chiếu 20 evidence chính và 1 evidence thay thế của q11 với text trích từ đúng trang PDF sau chuẩn hóa và với `data/processed/pages.jsonl`; tất cả đều khớp. Tôi kiểm tra nội dung câu hỏi, đáp án và evidence để giữ các điều kiện cần thiết. Các evidence hiện tại đều lấy từ text PDF, không dựa vào phần mô tả hình do VLM sinh. Khi hiện thực bộ chấm, tôi sẽ chấp nhận gold chính hoặc evidence trong `accepted_alternatives`, và không tính hit chỉ vì đúng trang nhưng thiếu bằng chứng.
