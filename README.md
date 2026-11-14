@@ -1,69 +1,56 @@
-# Day 06 · Data Ingestion Engineering
+# Day 06 · Truy xuất bằng chứng từ sách Project Management
 
-**Lab cá nhân** · **4 giờ** · **Dữ liệu tự chọn**
+Nguyễn Hữu An · 2A202604024 · L3B. Tôi đã so sánh ba cách truy xuất trên 32 trang của cùng một sách và 20 câu có gold. Tôi đã khóa C trên dev. Trên test, cả ba cấu hình đều đạt 2/5 Hit@1 và 2/5 Evidence Hit@3. Báo cáo có phân tích theo câu, nhãn có AI hỗ trợ và giới hạn của việc chỉ kiểm tra metadata tự động. [Báo cáo cá nhân](report/individual/2A202604024_NguyenHuuAn.md) · [Thông tin học viên](STUDENT.md) · [Kết quả](results/README.md)
 
-Biến tài liệu thành kho tri thức có thể truy xuất cho AI agent, rồi đo xem cách chuẩn bị dữ liệu nào hiệu quả nhất.
+## Dữ liệu và cấu hình đã chạy
 
-| 📄 Dữ liệu | 🧩 Chiến lược | 🎯 Benchmark |
-|---|---|---|
-| Tối thiểu **30 trang nội dung** | Tối thiểu **3 cấu hình** | Tối thiểu **20 câu hỏi** |
+- Corpus tiếng Anh gồm các trang PDF 35–63 và 65–67 của *Project Management* v1.03 (Adrienne Watt, BCcampus). Manifest ghi hash snapshot, giấy phép CC BY 4.0 và ngoại lệ theo nội dung. Gold được lấy từ chữ PDF. [PDF](data/raw/project-management.pdf) · [Manifest](data/manifest.json) · [15 câu dev và 5 câu test](benchmark/questions.jsonl)
+- A chia cửa sổ 500 ký tự, overlap 50. B gom đoạn theo heading, tối đa 1.000 ký tự, overlap 100 chỉ trong đoạn quá dài. C dùng 131 vector của B và lọc SQL theo section nếu câu hỏi nêu chương. A có 206 vector. [Nhật ký thí nghiệm](artifacts/experiment_log.csv) · [Mã pipeline](starter/src/)
+- Môi trường đã đo dùng Python 3.14.10, Ollama 0.40.16 (MLX), model vision local `mimo-v2.6:9b-mxfp8` và embedding `embeddinggemma-2:740m-mxfp8` (768 chiều, batch 16). PostgreSQL 16.16 + pgvector 0.8.7 lưu bảng `day6_lab.public.day6_chunks` trong volume Compose `pg_data`. Truy xuất exact cosine top-3. [Build, digest model và prefix query/document](starter/results/checkpoint5_initial.json) · [Compose](starter/docker-compose.yml) · [SQL truy xuất](starter/src/store.py)
+- Build đầu 10,29 s. Tổng search dev A/B/C lần lượt 60,00/35,93/34,60 ms và test 11,47/7,85/8,71 ms, tách khỏi embedding query dùng chung. Phí API pipeline local 0 USD, chưa đo điện và phần cứng. [Thời gian dev và khóa C](starter/results/checkpoint6/selection_lock.json) · [Thời gian test](starter/results/checkpoint6/test_summary.json)
 
-## Tiến độ bài làm cá nhân
+## Cài đặt và kiểm tra
 
-Tôi đã hoàn thành checkpoint 1 — chọn dữ liệu và thiết lập công cụ đọc corpus — checkpoint 2 — xây benchmark — checkpoint 3 — đọc, chuẩn hóa và thử chunk — cùng checkpoint 5 — lưu vector và truy xuất A/B/C — ngày 14/11/2026. Tôi sử dụng 32 trang nội dung từ sách *Project Management* của Adrienne Watt (BCcampus); nguồn, giấy phép, snapshot và quy tắc tính trang được ghi trong [manifest](data/manifest.json).
-
-Tôi đã lưu kết quả đọc trong [data/processed/](data/processed/), gồm 32 trang, log lỗi và thống kê. Cách cài đặt, chạy lại và yêu cầu model local được ghi trong [data/README.md](data/README.md). Báo cáo tiến độ nằm tại [báo cáo cá nhân](report/individual/2A202604024_NguyenHuuAn.md).
-
-Tôi đã xây [20 câu hỏi tiếng Anh](benchmark/questions.jsonl), chia 15 dev / 5 test, gồm 5 câu filter và 1 câu filter thuộc test. Tôi đã đối chiếu evidence với nguồn; quy tắc chọn cấu hình, cách chia tập và giới hạn rò rỉ được ghi trong [BENCHMARK.md](BENCHMARK.md#quy-tắc-chọn-cấu-hình-cho-corpus-project-management).
-
-Tôi đã xuất [206 chunk A và 131 chunk B](starter/results/ingestion_summary.json), giữ metadata nguồn/trang và offset. Tôi chốt B cho phạm vi demo, giữ các giới hạn cắt giữa từ và nhận diện heading bằng heuristic trong báo cáo. Cách chạy được ghi trong [starter/README.md](starter/README.md#4-xuất-trang-và-chunk-ab).
-
-Các lệnh kiểm tra tôi sử dụng từ thư mục gốc repo, sau khi cài dependencies:
+Các lệnh dưới đây chạy từ gốc repo, dùng shell macOS/Linux. Cần Python 3.11–3.14. Cài cả hai bộ requirements trong cùng môi trường để dùng đúng phiên bản pypdf và Pillow của snapshot. Kiểm tra unit test chỉ dùng dữ liệu thử, có thể chạy trước khi bật dịch vụ. [Dependencies trích xuất](scripts/requirements.txt) · [Dependencies pipeline](starter/requirements.txt)
 
 ```bash
-python3 -m unittest discover -s tests -v
-python3 scripts/read_corpus.py
-python3 -m starter.src.prepare
+python3 -m venv starter/.venv
+source starter/.venv/bin/activate
+python -m pip install -r scripts/requirements.txt -r starter/requirements.txt
+python -m pip check
+python -m unittest discover -s tests -v
 ```
 
-Lệnh đọc corpus cần Ollama và model vision local như mô tả trong hướng dẫn dữ liệu. Các test dùng mock cho phản hồi VLM và ghi kết quả vào thư mục tạm, không thay thế kết quả corpus thật. Ở checkpoint 5, tôi đã lưu 337 vector và chạy top-3 cho cả ba chiến lược trên 15 câu dev. Ở checkpoint 6, tôi đã khóa C trên dev và chạy riêng 5 câu test cho cả A/B/C. [Báo cáo benchmark và audit](report/individual/2A202604024_NguyenHuuAn.md#checkpoint-6--benchmark-và-audit-330) · [Hướng dẫn chạy checkpoint 6](starter/README.md#checkpoint-6) [Lệnh tái lập](starter/README.md#2-lưu-vector-và-chạy-dev) · [Trace dev](starter/results/dev_top3.jsonl)
+Để chạy pipeline, cần Docker Compose, Ollama local đang chạy tại 127.0.0.1:11434 và hai model đúng tag ở trên đã cài trong Ollama. Có thể bật Ollama bằng ứng dụng hoặc chạy `ollama serve` trong terminal riêng. Dùng `ollama list` để kiểm tra model trước khi chạy. Bản chạy test kiểm tra cả thông tin model local đã lưu ở lần build. [Hướng dẫn starter](starter/README.md) · [Điều kiện khớp snapshot](starter/scripts/checkpoint6.py)
 
-Tôi đã chốt checkpoint 6 cho bản demo: có kết quả dev/test, khóa lựa chọn C và điểm coherence/grounding từ student_score đã điền. Tôi bỏ qua đối chiếu metadata với PDF thủ công; thống kê metadata hiện chỉ là kết quả kiểm tra tự động và chưa đáp ứng đầy đủ phần audit thủ công theo GUIDE. Tôi ghi giới hạn này trong báo cáo cá nhân.
+```bash
+cp -n starter/.env.example starter/.env
+docker compose -f starter/docker-compose.yml -p day6_student_starter up -d --wait
+python starter/scripts/check_setup.py
+```
 
-## Bắt đầu nhanh
+## Tái lập từ snapshot
 
-Xem [hướng dẫn starter](starter/README.md) để dựng PostgreSQL + pgvector, nạp vector và chạy retrieval trên dev.
+Các lệnh pipeline ghi kết quả theo đường dẫn cố định. Để giữ minh chứng gốc, thực hiện trong **bản sao riêng** và dùng database lab dành cho lần tái lập. Với kho chunk đã giao, hai lệnh đầu nạp snapshot và kiểm tra nạp lại, sau đó tiến trình mới đọc dữ liệu đã lưu. Lần build đầu dùng nhãn mặc định build, lần nạp lại dùng nhãn reload để giữ tệp initial mà khóa đã ghi hash. Test xác minh hash đầu vào và dùng khóa C có sẵn.
 
-## 1. Xây pipeline
+```bash
+python -m starter.src.run build
+python -m starter.src.run build --label reload
+python -m starter.src.run dev --label restart
+python -m starter.scripts.check_reingestion
+python -m starter.scripts.checkpoint6 test
+python -m starter.scripts.audit_metadata
+```
 
-![Đọc tài liệu, chuẩn hóa, chia chunk, tạo vector, lưu và kiểm tra](assets/ingestion-pipeline.svg)
+Để tái tạo từ PDF thay vì bắt đầu ở chunk, chạy hai lệnh sau **trước** bước build trong bản sao. Lệnh đọc corpus dùng cache ảnh nếu snapshot khớp, còn prepare bảo toàn ranh giới đoạn phục vụ chunking. Cả hai cần model vision local đúng phiên bản. [Hướng dẫn đọc PDF và cache](data/README.md) · [Trang và chunk đã giao](starter/results/ingestion_summary.json)
 
-Chọn tài liệu được phép sử dụng; giữ **ID tài liệu, nguồn, trang/vị trí** và metadata phù hợp. Dùng embedding model thật qua API hoặc chạy local; lưu và truy xuất bằng pgvector, Qdrant, Chroma hoặc một store tương đương.
+```bash
+python scripts/read_corpus.py
+python -m starter.src.prepare
+```
 
-## 2. So sánh và đánh giá
+Trình tự lần đo gốc là build initial → reload → dev restart → `python -m starter.scripts.checkpoint6 select` trên dev → test → audit metadata tự động. Nếu tái lập toàn bộ thí nghiệm trên máy khác, dùng build đầu với `--label initial` cho lần đo mới, giữ mẫu coherence và di chuyển khóa cũ ra ngoài thư mục kết quả **của bản sao** trước bước select. Model, trace và hash phải khớp trong cùng lần đo. Thời gian phân xử có thể đổi theo máy. Nhãn coherence/grounding của bài nộp gắn với ID và nội dung đã lưu. [Quy tắc benchmark](BENCHMARK.md) · [Hướng dẫn chi tiết](starter/README.md)
 
-![Ba chiến lược được đánh giá trên cùng corpus và benchmark dev/test](assets/benchmark-workflow.svg)
+## Đối chiếu bài nộp
 
-Dùng cùng dữ liệu, model và câu hỏi cho cả ba cấu hình. Tách **15 câu dev / 5 câu test** trước khi chạy; chọn cấu hình trên dev, rồi đánh giá test sau khi cố định. Mỗi câu hỏi cần có đoạn bằng chứng và trang nguồn; thiết kế bộ câu hỏi và đánh giá theo [BENCHMARK.md](BENCHMARK.md).
-
-Đánh giá theo năm khía cạnh: **độ chính xác truy xuất**, **tính mạch lạc của chunk**, **tính hữu dụng của metadata**, **chất lượng grounding** và **tác động của chiến lược dữ liệu**. Giải thích lựa chọn bằng kết quả, ví dụ lỗi và các đánh đổi.
-
-## 3. Chuẩn bị bài nộp
-
-1. Chạy pipeline và lưu cấu hình, kết quả top-3, trace cùng nhãn đánh giá thủ công.
-2. Điền [thông tin học viên](STUDENT.md), [nhật ký thí nghiệm](artifacts/experiment_log.csv) và bản sao [mẫu báo cáo cá nhân](report/individual/MSSV_HoTen.md).
-3. Kiểm tra mã nguồn, cách chạy, manifest dữ liệu và checklist trong [SUBMISSION.md](SUBMISSION.md).
-
-## Tài liệu hướng dẫn
-
-| Bạn cần tìm | Tài liệu |
-|---|---|
-| Setup baseline PostgreSQL + pgvector | [starter/README.md](starter/README.md) |
-| Các bước làm và cách tính chỉ số | [GUIDE.md](GUIDE.md) |
-| Tiến độ trong 4 giờ | [CHECKPOINTS.md](CHECKPOINTS.md) |
-| Năm tiêu chí benchmark và bộ câu hỏi | [BENCHMARK.md](BENCHMARK.md) |
-| Tiêu chí chấm điểm | [RUBRIC.md](RUBRIC.md) |
-| Quy tắc sử dụng dữ liệu, AI và API | [RULES.md](RULES.md) |
-| Cách nộp bài | [SUBMISSION.md](SUBMISSION.md) |
-
-[data/format-example.json](data/format-example.json) chỉ minh họa định dạng, không phải corpus đủ điều kiện. Phần xử lý và benchmark do bạn tự hiện thực; không bắt buộc xây chatbot.
+Mã nằm ở [starter/src](starter/src/), còn [chỉ mục kết quả](results/README.md) dẫn tới minh chứng gốc trong starter/results. Trạng thái gửi bài được ghi trong [STUDENT.md](STUDENT.md). [Checklist](SUBMISSION.md) · [Rubric](RUBRIC.md) · [Hướng dẫn](GUIDE.md) · [Quy định](RULES.md)
