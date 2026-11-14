@@ -1,0 +1,16 @@
+{
+  "config.json": {
+    "layer_digest": "sha256:0673b3292afd69e1dc67bd113debeaa5ce82b36d9834c2071e552156e052e92b",
+    "fields": {
+      "hidden_size": 512,
+      "embedding_dim": 768
+    }
+  },
+  "config_sentence_transformers.json": {
+    "layer_digest": "sha256:031e56a498d33c349ab489a21885bcfe25b4fcba841149dc99e1e90d4a7c28f5",
+    "fields": {
+      "Retrieval-query": "task: search result | query: ",
+      "Retrieval-document": "title: none | text: "
+    }
+  }
+}

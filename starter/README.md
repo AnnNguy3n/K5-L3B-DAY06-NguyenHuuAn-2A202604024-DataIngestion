@@ -1,27 +1,6 @@
 # Starter · PostgreSQL + pgvector
 
-Bộ khởi động **tùy chọn** cho lab cá nhân. Docker Compose tạo PostgreSQL + pgvector local; `ingestion.py` và `chunking.py` đã đọc PDF, trích xuất chữ trong ảnh và xuất chunk; embedding, vector store, đánh giá và `run.py` còn **TODO**. Vẫn có thể chọn Qdrant, Chroma hoặc vector store tương đương theo [GUIDE.md](../GUIDE.md).
-
-## Cấu trúc
-
-```text
-starter/
-├── docker-compose.yml     # PostgreSQL 16 + pgvector, chỉ mở cổng local
-├── init.sql               # bật extension khi tạo database mới
-├── requirements.txt       # psycopg, pypdf, Pillow và python-dotenv
-├── .env.example           # cấu hình mẫu; copy thành .env
-├── scripts/check_setup.py # kiểm tra kết nối và extension (đã chạy được)
-├── src/
-│   ├── models.py          # cấu trúc dữ liệu mẫu
-│   ├── ingestion.py       # đọc text + chữ trong ảnh, chuẩn hóa
-│   ├── chunking.py        # fixed-size / theo đoạn, ID ổn định
-│   ├── embeddings.py      # TODO: chọn model API hoặc local
-│   ├── store.py           # TODO: lưu vector, metadata và filter
-│   ├── evaluation.py      # TODO: chấm truy xuất, lưu trace
-│   └── run.py             # TODO: kết nối các bước thành pipeline
-├── data/                  # bạn tự chuẩn bị corpus được phép sử dụng
-└── results/               # lưu kết quả của bạn
-```
+Starter dùng PostgreSQL 16, pgvector và Ollama local. Checkpoint 5 dùng lại hai file chunk đã xuất. Phần đánh giá chất lượng retrieval thuộc checkpoint tiếp theo.
 
 ## 1. Cài và kiểm tra database
 
@@ -50,20 +29,22 @@ Dừng container nhưng giữ dữ liệu:
 docker compose -p day6_student_starter stop
 ```
 
-## 2. Chọn embedding model
+## 2. Lưu vector và chạy dev
 
-Điền key tương ứng trong `.env` nếu dùng OpenRouter, OpenAI hoặc Gemini; **không commit `.env`**. Model local không cần API key. `requirements.txt` chỉ có dependencies cơ bản: tự cài SDK hoặc thư viện local phù hợp với model bạn chọn và ghi lại version/lệnh cài trong báo cáo. Ghi tên model và số chiều; dùng cùng model cho toàn bộ chiến lược và vector query tương thích vector document.
+Bật Ollama local ở `127.0.0.1:11434`. Kiểm tra `ollama list` có đúng tag `embeddinggemma-2:740m-mxfp8`. Adapter dùng HTTP qua thư viện chuẩn Python, đọc chiều native từ `/api/tags`, dò hai vector qua `/api/embed` và kiểm tra chiều từng vector. Lần chạy này dùng Ollama 0.40.16. Query dùng tiền tố `task: search result | query: `, document dùng `title: none | text: `. Không truyền tham số rút gọn chiều. Hai tiền tố khớp với cấu hình retrieval đóng gói trong model. [Model card](https://ai.google.dev/gemma/docs/embeddinggemma/model_card_2)
 
-## 3. Hoàn thiện pipeline
+Sau bước cài đặt ở trên, chạy từ **thư mục gốc repo** với hai file `starter/results/chunks_{A,B}.jsonl` đã chốt.
 
-1. Đặt corpus vào `data/` hoặc cung cấp manifest/hướng dẫn truy cập. Đọc [GUIDE.md](../GUIDE.md) về **30 trang nội dung**, quyền dữ liệu và metadata.
-2. Hoàn thiện từng hàm TODO trong `src/`. Lưu ID tài liệu, nguồn, trang/vị trí và ít nhất một trường filter có ích.
-3. Xây ít nhất ba cấu hình; ví dụ A fixed-size, B theo đoạn, C như B nhưng có filter. Cần cùng corpus, model và benchmark; nạp lại không nhân đôi và xử lý chunk cũ khi dữ liệu đổi.
-4. Tự viết ít nhất 20 câu hỏi kèm evidence, tách dev/test trước khi thử theo [BENCHMARK.md](../BENCHMARK.md). Lưu trace top-3 và báo cáo đủ năm tiêu chí.
-5. Sau khi hoàn thiện, chạy `python -m src.run` từ thư mục `starter/`. Trước khi làm TODO, lệnh này **chủ động báo `NotImplementedError`**.
+```bash
+starter/.venv/bin/python -m starter.src.run build --label initial
+starter/.venv/bin/python -m starter.src.run build --label reload
+starter/.venv/bin/python -m starter.src.run dev --label restart
+starter/.venv/bin/python -m starter.scripts.check_reingestion
+```
 
-Lưu code, cấu hình, kết quả và lệnh chạy để người chấm tái lập; không commit key, dữ liệu mật hoặc dữ liệu không có quyền chia sẻ.
+Mỗi lệnh build nạp cả hai snapshot trong một transaction, cập nhật theo khóa (strategy, chunk_id) và xóa ID đã biến mất ở từng snapshot. C đọc trực tiếp các hàng B. Với corpus nhỏ, SQL lọc JSONB trước khi lấy ba hàng có cosine similarity cao nhất, dùng chunk ID để phân xử đồng điểm. Mỗi câu dev được embed một lần rồi dùng chung cho A/B/C. Lệnh dev chỉ đọc bảng đã lưu. Lệnh cuối kiểm tra thay đổi dữ liệu trong bảng tạm của phiên riêng.
 
+Trong `results/`, mỗi lần chạy pipeline ghi lại `dev_top3.jsonl` và một `checkpoint5_<label>.json`. So sánh `trace_sha256` giữa ba lần chạy và với SHA-256 của trace. Mỗi dòng `stored` lần lượt ghi chiến lược vật lý, số hàng, số ID phân biệt, chiều nhỏ nhất và lớn nhất trong database. Thời gian dùng giây. Chế độ dev và build đều chỉ truy vấn split dev.
 
 ## 4. Xuất trang và chunk A/B
 
@@ -112,7 +93,4 @@ nguồn, tài liệu, trang, cấu hình có version và vị trí; chạy lại
 nhân đôi. Khi nạp vector sau này, upsert ID hiện có và xóa chunk cũ không còn
 trong lần xuất mới.
 
-A/B chưa áp dụng filter. C dùng **chính `chunks_B.jsonl`**, áp dụng
-`question.filter` khi truy vấn có filter; bước truy vấn thuộc phần retrieval chưa
-hiện thực. Các kích thước là tham số khởi đầu, chưa tối ưu trên dev. Có thể đổi
-`--size 500 --overlap 50 --max-size 1000 --long-overlap 100`; không dùng test để chọn tham số.
+A và B truy vấn toàn bộ chunk của từng chiến lược. C dùng cùng chunk/vector B và lọc trong SQL theo metadata của câu hỏi.

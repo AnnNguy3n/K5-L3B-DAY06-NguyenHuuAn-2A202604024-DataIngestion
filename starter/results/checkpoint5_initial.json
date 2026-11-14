@@ -1,0 +1,84 @@
+{
+  "mode": "build",
+  "pid": 46495,
+  "utc": "2026-11-14T11:44:02.984018+00:00",
+  "model": {
+    "tag": {
+      "name": "embeddinggemma-2:740m-mxfp8",
+      "model": "embeddinggemma-2:740m-mxfp8",
+      "modified_at": "2026-11-13T16:37:09.876902445+07:00",
+      "size": 1389077120,
+      "digest": "a4efd357164f4bb30a45b0f0e7bc45e8dfa5be181de738c3227426624b3f8189",
+      "details": {
+        "parent_model": "",
+        "format": "safetensors",
+        "family": "",
+        "families": null,
+        "parameter_size": "",
+        "quantization_level": "mxfp8",
+        "context_length": 262144,
+        "embedding_length": 768,
+        "runner": "mlx"
+      },
+      "capabilities": [
+        "embedding",
+        "vision",
+        "audio"
+      ]
+    },
+    "ollama": "0.40.16",
+    "query_prefix": "task: search result | query: ",
+    "document_prefix": "title: none | text: ",
+    "probe_dimensions": [
+      768,
+      768
+    ],
+    "batch_size": 16,
+    "truncate": false,
+    "dimensions_parameter": null
+  },
+  "python": "3.14.10",
+  "psycopg": "3.3.8",
+  "metric": "cosine",
+  "api_cost_usd": 0,
+  "electricity_hardware_cost": null,
+  "ingestion": {
+    "A": {
+      "chunks": 206,
+      "removed": 0,
+      "embed_s": 5.639729791997524,
+      "write_s": 0.08702841599733802,
+      "input_sha256": "2df93f4df9f07d30128bb4b34dfce12ffc3e1a3af05a037734668d5d976af412"
+    },
+    "B": {
+      "chunks": 131,
+      "removed": 0,
+      "embed_s": 3.971708250006486,
+      "write_s": 0.06191979199502384,
+      "input_sha256": "6e391fc4126a4da0101366e3e408ae9c3245c39c5748bb8b200145168ca8f3fb"
+    }
+  },
+  "postgres": "16.16 (Debian 16.16-1.pgdg12+1)",
+  "pgvector": "0.8.7",
+  "stored": [
+    [
+      "A",
+      206,
+      206,
+      768,
+      768
+    ],
+    [
+      "B",
+      131,
+      131,
+      768,
+      768
+    ]
+  ],
+  "dev_seconds": 0.37312562500301283,
+  "seconds": 10.29167199999938,
+  "dev_traces": 45,
+  "trace_sha256": "6b8e55f06d6642f4e8c0d3765666ce0be36f877f72bae5742269f5d35f8deebe",
+  "filtered_C": 4
+}

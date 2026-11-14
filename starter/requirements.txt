@@ -1,5 +1,5 @@
-# Core setup and PDF parsing. Choose and install an embedding SDK separately.
+# Ollama /api/embed uses Python urllib. pgvector SQL runs through psycopg.
 psycopg[binary]==3.3.8
 pypdf>=5,<7
 Pillow>=11,<14  # embedded-image decoding for local vision extraction
-python-dotenv>=1,<2
+python-dotenv==1.2.4

@@ -10,7 +10,7 @@ Biến tài liệu thành kho tri thức có thể truy xuất cho AI agent, r�
 
 ## Tiến độ bài làm cá nhân
 
-Tôi đã hoàn thành checkpoint 1 — chọn dữ liệu và thiết lập công cụ đọc corpus — checkpoint 2 — xây benchmark — và checkpoint 3 — đọc, chuẩn hóa và thử chunk — ngày 14/11/2026. Tôi sử dụng 32 trang nội dung từ sách *Project Management* của Adrienne Watt (BCcampus); nguồn, giấy phép, snapshot và quy tắc tính trang được ghi trong [manifest](data/manifest.json).
+Tôi đã hoàn thành checkpoint 1 — chọn dữ liệu và thiết lập công cụ đọc corpus — checkpoint 2 — xây benchmark — checkpoint 3 — đọc, chuẩn hóa và thử chunk — cùng checkpoint 5 — lưu vector và truy xuất A/B/C — ngày 14/11/2026. Tôi sử dụng 32 trang nội dung từ sách *Project Management* của Adrienne Watt (BCcampus); nguồn, giấy phép, snapshot và quy tắc tính trang được ghi trong [manifest](data/manifest.json).
 
 Tôi đã lưu kết quả đọc trong [data/processed/](data/processed/), gồm 32 trang, log lỗi và thống kê. Cách cài đặt, chạy lại và yêu cầu model local được ghi trong [data/README.md](data/README.md). Báo cáo tiến độ nằm tại [báo cáo cá nhân](report/individual/2A202604024_NguyenHuuAn.md).
 
@@ -26,11 +26,11 @@ python3 scripts/read_corpus.py
 python3 -m starter.src.prepare
 ```
 
-Lệnh đọc corpus cần Ollama và model vision local như mô tả trong hướng dẫn dữ liệu. Các test dùng mock cho phản hồi VLM và ghi kết quả vào thư mục tạm, không thay thế kết quả corpus thật. Tôi chưa thực hiện embedding, vector retrieval hoặc đo chỉ số benchmark ở checkpoint này.
+Lệnh đọc corpus cần Ollama và model vision local như mô tả trong hướng dẫn dữ liệu. Các test dùng mock cho phản hồi VLM và ghi kết quả vào thư mục tạm, không thay thế kết quả corpus thật. Ở checkpoint 5, tôi đã lưu 337 vector và chạy top-3 cho cả ba chiến lược trên 15 câu dev. Năm câu test và phần chấm điểm dành cho checkpoint sau. [Lệnh tái lập](starter/README.md#2-lưu-vector-và-chạy-dev) · [Trace dev](starter/results/dev_top3.jsonl)
 
 ## Bắt đầu nhanh
 
-Dùng [starter PostgreSQL + pgvector](starter/README.md) để dựng database và hoàn thiện các hàm TODO, hoặc tự chọn vector store tương đương. Starter chỉ là khung: **bạn tự hiện thực pipeline và benchmark**.
+Xem [hướng dẫn starter](starter/README.md) để dựng PostgreSQL + pgvector, nạp vector và chạy retrieval trên dev.
 
 ## 1. Xây pipeline
 

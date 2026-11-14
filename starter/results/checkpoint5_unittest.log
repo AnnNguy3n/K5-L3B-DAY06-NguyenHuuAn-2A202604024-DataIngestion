@@ -1,0 +1,34 @@
+test_anchor_does_not_match_earlier_prose_reference (test_figure_extraction.FigureTests.test_anchor_does_not_match_earlier_prose_reference) ... ok
+test_cache_uses_same_image_model_and_context (test_figure_extraction.FigureTests.test_cache_uses_same_image_model_and_context) ... ok
+test_reject_invalid_response_and_nonvision_model (test_figure_extraction.FigureTests.test_reject_invalid_response_and_nonvision_model) ... ok
+test_success_progress_and_log_append_across_runs (test_figure_extraction.FigureTests.test_success_progress_and_log_append_across_runs) ... ok
+test_vision_failure_preserves_all_text_and_logs_each_image (test_figure_extraction.FigureTests.test_vision_failure_preserves_all_text_and_logs_each_image) ... ok
+test_consecutive_headings_stay_with_body (test_ingestion_chunking.ChunkTests.test_consecutive_headings_stay_with_body) ... ok
+test_figure_labels_and_table_cells_are_not_headings (test_ingestion_chunking.ChunkTests.test_figure_labels_and_table_cells_are_not_headings) ... ok
+test_fixed_overlap_exact_end_and_validation (test_ingestion_chunking.ChunkTests.test_fixed_overlap_exact_end_and_validation) ... ok
+test_heading_boundaries_with_and_without_blank_lines (test_ingestion_chunking.ChunkTests.test_heading_boundaries_with_and_without_blank_lines) ... ok
+test_ids_offsets_metadata_and_reload (test_ingestion_chunking.ChunkTests.test_ids_offsets_metadata_and_reload) ... ok
+test_long_paragraph_uses_exact_fixed_windows (test_ingestion_chunking.ChunkTests.test_long_paragraph_uses_exact_fixed_windows) ... ok
+test_normalization_preserves_paragraphs_and_is_idempotent (test_ingestion_chunking.ChunkTests.test_normalization_preserves_paragraphs_and_is_idempotent) ... ok
+test_overlap_stays_inside_each_long_paragraph (test_ingestion_chunking.ChunkTests.test_overlap_stays_inside_each_long_paragraph) ... ok
+test_paragraph_grouping_and_long_paragraphs_preserve_coverage (test_ingestion_chunking.ChunkTests.test_paragraph_grouping_and_long_paragraphs_preserve_coverage) ... ok
+test_prose_and_bullets_do_not_start_headings (test_ingestion_chunking.ChunkTests.test_prose_and_bullets_do_not_start_headings) ... ok
+test_short_paragraphs_pack_without_overlap_or_crossing_heading (test_ingestion_chunking.ChunkTests.test_short_paragraphs_pack_without_overlap_or_crossing_heading) ... ok
+test_small_sections_merge_and_keep_all_headings (test_ingestion_chunking.ChunkTests.test_small_sections_merge_and_keep_all_headings) ... ok
+test_title_case_headings_survive_normalization_and_long_sections (test_ingestion_chunking.ChunkTests.test_title_case_headings_survive_normalization_and_long_sections) ... ok
+test_empty_failed_page_and_failed_image_are_logged (test_ingestion_chunking.IngestionTests.test_empty_failed_page_and_failed_image_are_logged) ... fake.pdf page=1 stage=empty_page: No text after PDF and image extraction
+fake.pdf page=2 stage=text: broken text
+fake.pdf page=2 stage=empty_page: No text after PDF and image extraction
+fake.pdf page=3 stage=figure: vision offline
+ok
+test_export_and_reload_without_errors (test_ingestion_chunking.IngestionTests.test_export_and_reload_without_errors) ... ok
+test_mixed_and_image_only_pages_keep_physical_numbers (test_ingestion_chunking.IngestionTests.test_mixed_and_image_only_pages_keep_physical_numbers) ... ok
+test_real_blank_pdf_and_missing_file (test_ingestion_chunking.IngestionTests.test_real_blank_pdf_and_missing_file) ... /var/folders/0c/lvln9kk13_7bkvm5gsbpmz200000gn/T/tmpn_3cq_oi/blank.pdf page=1 stage=empty_page: No text after PDF and image extraction
+/var/folders/0c/lvln9kk13_7bkvm5gsbpmz200000gn/T/tmpn_3cq_oi/blank.pdf page=2 stage=empty_page: No text after PDF and image extraction
+missing.pdf page=None stage=source: [Errno 2] No such file or directory: '/var/folders/0c/lvln9kk13_7bkvm5gsbpmz200000gn/T/tmpn_3cq_oi/missing.pdf'
+ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 2.766s
+
+OK

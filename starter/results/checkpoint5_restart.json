@@ -1,0 +1,68 @@
+{
+  "mode": "dev",
+  "pid": 46531,
+  "utc": "2026-11-14T11:44:31.784919+00:00",
+  "model": {
+    "tag": {
+      "name": "embeddinggemma-2:740m-mxfp8",
+      "model": "embeddinggemma-2:740m-mxfp8",
+      "modified_at": "2026-11-13T16:37:09.876902445+07:00",
+      "size": 1389077120,
+      "digest": "a4efd357164f4bb30a45b0f0e7bc45e8dfa5be181de738c3227426624b3f8189",
+      "details": {
+        "parent_model": "",
+        "format": "safetensors",
+        "family": "",
+        "families": null,
+        "parameter_size": "",
+        "quantization_level": "mxfp8",
+        "context_length": 262144,
+        "embedding_length": 768,
+        "runner": "mlx"
+      },
+      "capabilities": [
+        "embedding",
+        "vision",
+        "audio"
+      ]
+    },
+    "ollama": "0.40.16",
+    "query_prefix": "task: search result | query: ",
+    "document_prefix": "title: none | text: ",
+    "probe_dimensions": [
+      768,
+      768
+    ],
+    "batch_size": 16,
+    "truncate": false,
+    "dimensions_parameter": null
+  },
+  "python": "3.14.10",
+  "psycopg": "3.3.8",
+  "metric": "cosine",
+  "api_cost_usd": 0,
+  "electricity_hardware_cost": null,
+  "postgres": "16.16 (Debian 16.16-1.pgdg12+1)",
+  "pgvector": "0.8.7",
+  "stored": [
+    [
+      "A",
+      206,
+      206,
+      768,
+      768
+    ],
+    [
+      "B",
+      131,
+      131,
+      768,
+      768
+    ]
+  ],
+  "dev_seconds": 0.3989535419968888,
+  "seconds": 0.5042307920011808,
+  "dev_traces": 45,
+  "trace_sha256": "6b8e55f06d6642f4e8c0d3765666ce0be36f877f72bae5742269f5d35f8deebe",
+  "filtered_C": 4
+}
