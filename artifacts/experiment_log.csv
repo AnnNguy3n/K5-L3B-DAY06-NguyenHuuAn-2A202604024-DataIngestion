@@ -1,4 +1,4 @@
 strategy,chunking,chunk_size,overlap,metadata,filter,vectorizer,hypothesis,dev_hit1,dev_hit3,test_hit1,test_hit3,notes
-A,,,,,,,,,,,,
-B,,,,,,,,,,,,
-C,,,,,,,,,,,,
+A,fixed_size,500,50,document_id;source;page;page_id;section;language;document_type;char_start;char_end,none,,Baseline: cửa sổ nhỏ có thể cắt ý; overlap giữ ngữ cảnh lân cận.,,,,,Checkpoint 3: 206 chunks exported; retrieval not run.
+B,by_paragraph,1000,100 (long paragraphs only),document_id;source;page;page_id;section;language;document_type;char_start;char_end,none,,Gom đoạn/heading có thể giữ ngữ cảnh tốt hơn A; cần đo retrieval và coherence.,,,,,Checkpoint 3: 131 chunks exported; demo configuration fixed; retrieval not run.
+C,by_paragraph,1000,100 (long paragraphs only),document_id;source;page;page_id;section;language;document_type;char_start;char_end,question.filter when present (planned),,Filter section có thể giảm nhầm phạm vi so với B khi câu hỏi nêu chương.,,,,,Checkpoint 3: Uses chunks_B.jsonl; filtering not implemented; retrieval not run.

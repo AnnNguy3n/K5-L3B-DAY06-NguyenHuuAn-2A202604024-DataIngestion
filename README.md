@@ -10,20 +10,23 @@ Biến tài liệu thành kho tri thức có thể truy xuất cho AI agent, r�
 
 ## Tiến độ bài làm cá nhân
 
-Tôi đã hoàn thành checkpoint 1 — chọn dữ liệu và thiết lập công cụ đọc corpus — và checkpoint 2 — xây benchmark — ngày 14/11/2026. Tôi sử dụng 32 trang nội dung từ sách *Project Management* của Adrienne Watt (BCcampus); nguồn, giấy phép, snapshot và quy tắc tính trang được ghi trong [manifest](data/manifest.json).
+Tôi đã hoàn thành checkpoint 1 — chọn dữ liệu và thiết lập công cụ đọc corpus — checkpoint 2 — xây benchmark — và checkpoint 3 — đọc, chuẩn hóa và thử chunk — ngày 14/11/2026. Tôi sử dụng 32 trang nội dung từ sách *Project Management* của Adrienne Watt (BCcampus); nguồn, giấy phép, snapshot và quy tắc tính trang được ghi trong [manifest](data/manifest.json).
 
 Tôi đã lưu kết quả đọc trong [data/processed/](data/processed/), gồm 32 trang, log lỗi và thống kê. Cách cài đặt, chạy lại và yêu cầu model local được ghi trong [data/README.md](data/README.md). Báo cáo tiến độ nằm tại [báo cáo cá nhân](report/individual/2A202604024_NguyenHuuAn.md).
 
 Tôi đã xây [20 câu hỏi tiếng Anh](benchmark/questions.jsonl), chia 15 dev / 5 test, gồm 5 câu filter và 1 câu filter thuộc test. Tôi đã đối chiếu evidence với nguồn; quy tắc chọn cấu hình, cách chia tập và giới hạn rò rỉ được ghi trong [BENCHMARK.md](BENCHMARK.md#quy-tắc-chọn-cấu-hình-cho-corpus-project-management).
+
+Tôi đã xuất [206 chunk A và 131 chunk B](starter/results/ingestion_summary.json), giữ metadata nguồn/trang và offset. Tôi chốt B cho phạm vi demo, giữ các giới hạn cắt giữa từ và nhận diện heading bằng heuristic trong báo cáo. Cách chạy được ghi trong [starter/README.md](starter/README.md#4-xuất-trang-và-chunk-ab).
 
 Các lệnh kiểm tra tôi sử dụng từ thư mục gốc repo, sau khi cài dependencies:
 
 ```bash
 python3 -m unittest discover -s tests -v
 python3 scripts/read_corpus.py
+python3 -m starter.src.prepare
 ```
 
-Lệnh đọc corpus cần Ollama và model vision local như mô tả trong hướng dẫn dữ liệu. Các test dùng mock cho phản hồi VLM và ghi kết quả vào thư mục tạm, không thay thế kết quả corpus thật. Tôi chưa thực hiện chunking, embedding, vector retrieval hoặc đo chỉ số benchmark ở checkpoint này.
+Lệnh đọc corpus cần Ollama và model vision local như mô tả trong hướng dẫn dữ liệu. Các test dùng mock cho phản hồi VLM và ghi kết quả vào thư mục tạm, không thay thế kết quả corpus thật. Tôi chưa thực hiện embedding, vector retrieval hoặc đo chỉ số benchmark ở checkpoint này.
 
 ## Bắt đầu nhanh
 

@@ -4,7 +4,7 @@
 - MSSV: 2A202604024
 - Lớp: L3B
 - Ngày cập nhật: 14/11/2026
-- Phạm vi báo cáo: Hoàn thành checkpoint 1 — chọn dữ liệu và setup — và checkpoint 2 — xây benchmark. Đây là báo cáo tiến độ, chưa phải báo cáo kết quả cuối bài.
+- Phạm vi báo cáo: Hoàn thành checkpoint 1 — chọn dữ liệu và setup — checkpoint 2 — xây benchmark — và checkpoint 3 — đọc, chuẩn hóa và thử chunk. Đây là báo cáo tiến độ, chưa phải báo cáo kết quả cuối bài.
 
 ## Dữ liệu và pipeline
 
@@ -50,7 +50,7 @@ Tôi kiểm tra lại 32 trang bằng pypdf và đối chiếu với kết quả
 - Tôi chưa xác minh trạng thái chạy PostgreSQL/pgvector và chưa hiện thực vector store. Việc kiểm tra pgvector bằng starter là tùy chọn tại checkpoint 1.
 - Tôi đã bỏ nhãn review khỏi output; thay đổi này không phải bằng chứng nội dung hình đã được kiểm chứng. Trước khi dùng làm gold evidence, tôi cần đối chiếu nội dung VLM với hình gốc.
 - Figure 5.2 ở trang PDF 63 đang có `placement: page_end_unresolved`; tôi chưa xác định hoàn chỉnh vị trí đọc của hình này.
-- Việc gộp whitespace làm mất ranh giới đoạn trong `text_only`. Tôi cần xử lý cấu trúc đoạn trước khi triển khai chunking theo đoạn; nếu đổi chuẩn hóa, tôi sẽ cập nhật manifest và output tương ứng.
+- Bản trích xuất checkpoint 1 tại `data/processed/` gộp whitespace và không giữ đoạn. Tại checkpoint 3, tôi giữ riêng output mới tại `starter/results/`, bảo toàn dòng trống và tách heading bằng heuristic; manifest vẫn mô tả snapshot và text chuẩn hóa của checkpoint 1. Tôi đã kiểm tra evidence trên output mới.
 - Công cụ hiện xử lý embedded images, chưa bao phủ vector drawings hoặc OCR riêng cho trang scan. Tôi chưa đánh giá đầy đủ thứ tự đọc bảng/phân cột.
 
 ## Cấu hình và benchmark
@@ -73,11 +73,41 @@ Tôi chia tập ở cấp câu hỏi, giữ các chủ đề trong cả dev và 
 
 Tôi cố định benchmark và tiêu chí chọn cấu hình trước bước thử retrieval: ưu tiên Evidence Hit@3 trên dev, tiếp theo Hit@1 trên dev, tiếp theo tổng thời gian truy xuất 15 câu dev trong cùng điều kiện; nếu vẫn hòa, chọn cấu hình đứng trước theo tên. Tôi chỉ dùng dev để điều chỉnh, khóa cấu hình trước khi đánh giá test và chỉ dùng kết quả test để báo cáo. Chi tiết nằm trong [BENCHMARK.md](../../BENCHMARK.md).
 
-Tôi chưa chốt tham số A/B/C, embedding model hoặc số chiều. Nhật ký `artifacts/experiment_log.csv` giữ nguyên các ô kết quả trống vì tôi chưa chạy thí nghiệm retrieval. Bước tiếp theo của tôi là xử lý cấu trúc đoạn và triển khai hai cấu hình chunk, đồng thời giữ truy vết nguồn/trang.
+Tôi đã chốt cấu hình chunk ban đầu cho bài demo: A dùng cửa sổ 500 ký tự, overlap 50; B gom đoạn/heading tối đa 1.000 ký tự, chỉ dùng cửa sổ cố định overlap 100 khi một đơn vị đoạn dài vượt giới hạn. C dự kiến dùng chính chunk của B và thêm filter từ câu hỏi lúc retrieval. Tôi ghi tham số và giả thuyết trong [experiment_log.csv](../../artifacts/experiment_log.csv), giữ các ô model và điểm retrieval trống vì chưa chạy embedding hoặc retrieval.
+
+## Đọc, chuẩn hóa và chunking — checkpoint 3
+
+Tôi hiện thực `DocumentPage` và `Chunk` tại `starter/src/models.py`, đọc dữ liệu qua `ingestion.py`, chia chunk qua `chunking.py` và xuất dữ liệu bằng `prepare.py`. Tôi dùng nhận diện heading theo ngữ cảnh tại `text_structure.py`; xử lý nhãn hình và bảng để giảm việc coi từng từ là heading. Tôi gom các khối ngắn, giữ heading trong metadata và giới hạn chunk trong từng trang vật lý.
+
+Tôi giữ Unicode NFC, nối các dòng bị ngắt, bảo toàn dòng trống và ranh giới heading nhận diện được. Phương pháp này là heuristic trên text, chưa phục hồi đầy đủ đoạn và bố cục PDF. Metadata chunk có nguồn, trang, section, cấu hình và offset `[char_start, char_end)` trong text trang. ID được tạo ổn định theo tài liệu, nguồn, trang, cấu hình và vị trí.
+
+Tôi chạy từ thư mục gốc repo sau khi cài dependencies tại `starter/requirements.txt`:
+
+```bash
+starter/.venv/bin/python -m starter.src.prepare
+starter/.venv/bin/python -m unittest discover -s tests -v
+```
+
+Lệnh prepare cần Ollama local và model vision theo [starter/README.md](../../starter/README.md#4-xuất-trang-và-chunk-ab); cache ảnh vẫn cần xác thực model digest. Tôi lưu [trang chuẩn hóa](../../starter/results/pages.jsonl), [chunk A](../../starter/results/chunks_A.jsonl), [chunk B](../../starter/results/chunks_B.jsonl), [log lỗi](../../starter/results/ingestion_errors.jsonl) và [summary](../../starter/results/ingestion_summary.json).
+
+| Thống kê thực tế | A | B |
+|---|---:|---:|
+| Số chunk | 206 | 131 |
+| Độ dài nhỏ nhất, ký tự | 107 | 73 |
+| Trung vị, ký tự | 500 | 790 |
+| Trung bình, ký tự | 469,6 | 712,5 |
+| Độ dài lớn nhất, ký tự | 500 | 1.000 |
+| Chunk dưới 100 ký tự | 0 | 1 |
+| Chunk dưới 200 ký tự | 8 | 8 |
+| Tổng ký tự, gồm overlap | 96.732 | 93.342 |
+
+Tôi đọc được 32/32 trang, không có trang rỗng hoặc lỗi trong output hiện tại; 3 hình được giữ trong dữ liệu trang. Tôi kiểm tra kết quả tái tạo A/B khớp hoàn toàn các file đã xuất, ID không trùng, offset và metadata đúng, không mất ký tự nội dung ngoài whitespace. Tôi kiểm tra lại 20 evidence chính và 1 evidence thay thế: tất cả khớp nguyên văn cả text nguồn chuẩn hóa và text hợp nhất mới. Tôi chạy toàn bộ 22 test, tất cả pass; phần VLM trong test được mock và ghi vào thư mục tạm.
+
+Tôi chốt B ở mức đủ dùng cho bài demo và không tối ưu chunking thêm tại checkpoint này. Giới hạn còn lại gồm cửa sổ đoạn dài có thể cắt giữa từ, ranh giới trang có thể cắt giữa câu, và heuristic có thể nhận một dòng liệt kê dài là heading. Ví dụ output có chunk bắt đầu bằng `les. Also` ở trang 57 và metadata heading chứa cả dòng diễn giải `5. Managing quality...` ở trang 39. Tôi chưa coi việc giảm chunk ngắn là bằng chứng B truy xuất tốt hơn A; coherence và retrieval sẽ được đánh giá ở các checkpoint sau.
 
 ## Kết quả retrieval và audit
 
-Tôi chưa có Hit@1, Evidence Hit@3, chunk count, nhãn coherence, audit metadata hoặc điểm grounding. Tôi chưa thực hiện so sánh A–B và B–C, chưa có chiến lược được chọn hoặc ví dụ lỗi retrieval. Các bảng theo mẫu báo cáo sẽ được bổ sung bằng kết quả thực chạy ở những checkpoint sau.
+Tôi chưa có Hit@1, Evidence Hit@3, nhãn coherence, audit metadata hoặc điểm grounding. Tôi chưa thực hiện so sánh A–B và B–C, chưa có chiến lược được chọn hoặc ví dụ lỗi retrieval. Các bảng theo mẫu báo cáo sẽ được bổ sung bằng kết quả thực chạy ở những checkpoint sau.
 
 ## Công cụ AI và cách kiểm tra
 
@@ -85,4 +115,4 @@ Tôi sử dụng Codex để hỗ trợ giải thích yêu cầu, review code, �
 
 ## Kết luận tiến độ
 
-Tôi đã chuẩn bị corpus đủ 32 trang nội dung, ghi manifest nguồn/quyền và quy tắc tính trang, đồng thời có công cụ đọc hoạt động và kết quả kiểm tra nhất quán. Tôi đã xây và kiểm tra bộ 20 câu hỏi, cố định split 15 dev / 5 test và tiêu chí chọn cấu hình, đồng thời ghi giới hạn của benchmark. Tôi hoàn thành checkpoint 1 và checkpoint 2; chunking, embedding, lưu vector và đánh giá retrieval thuộc các bước tiếp theo.
+Tôi đã chuẩn bị corpus đủ 32 trang nội dung, ghi manifest nguồn/quyền và quy tắc tính trang, đồng thời có công cụ đọc hoạt động và kết quả kiểm tra nhất quán. Tôi đã xây và kiểm tra bộ 20 câu hỏi, cố định split 15 dev / 5 test và tiêu chí chọn cấu hình, đồng thời ghi giới hạn của benchmark. Tôi đã xuất và kiểm tra hai cấu hình chunk cùng log lỗi và metadata truy nguồn. Tôi hoàn thành checkpoint 1, 2 và 3; embedding, lưu vector và đánh giá retrieval thuộc các bước tiếp theo.

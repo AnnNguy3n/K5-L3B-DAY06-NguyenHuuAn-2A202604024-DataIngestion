@@ -1,0 +1,62 @@
+{
+  "corpus_id": "project-management-foundations",
+  "manifest_sha256": "f42cee873f9e181a3fc03bbfb3d37b5760a5973734a4e552c5201fd5ca8b09cf",
+  "total_pages": 32,
+  "saved_pages": 32,
+  "error_count": 0,
+  "empty_pages": 0,
+  "image_count": 3,
+  "saved_figures": 3,
+  "vision_model": "mimo-v2.6:9b-mxfp8",
+  "sources": [
+    {
+      "document_id": "project-management-2019-v1.03",
+      "total_pages": 32,
+      "attempted_pages": 32,
+      "saved_pages": 32,
+      "error_count": 0,
+      "empty_pages": 0,
+      "image_count": 3,
+      "saved_figures": 3,
+      "physical_page_count": 219,
+      "status": "complete"
+    }
+  ],
+  "status": "complete",
+  "chunk_size_stats": {
+    "A": {
+      "min": 107,
+      "median": 500.0,
+      "max": 500,
+      "below_200_chars": 8
+    },
+    "B": {
+      "min": 73,
+      "median": 790,
+      "max": 1000,
+      "below_200_chars": 8
+    }
+  },
+  "configurations": {
+    "A": {
+      "method": "fixed_size",
+      "size": 500,
+      "overlap": 50,
+      "filter": null,
+      "chunks": 206
+    },
+    "B": {
+      "method": "by_paragraph",
+      "max_size": 1000,
+      "long_overlap": 100,
+      "overlap_scope": "long_paragraph_only",
+      "filter": null,
+      "chunks": 131
+    },
+    "C": {
+      "chunks_file": "chunks_B.jsonl",
+      "filter": "question.filter when present"
+    }
+  },
+  "note": "Initial parameters; not optimized on dev. Retrieval evaluation is a separate step."
+}

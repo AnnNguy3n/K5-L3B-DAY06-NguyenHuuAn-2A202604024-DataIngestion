@@ -1,6 +1,6 @@
 # Starter · PostgreSQL + pgvector
 
-Bộ khởi động **tùy chọn** cho lab cá nhân. Docker Compose tạo PostgreSQL + pgvector local; các file trong `src/` là **khung pseudocode có TODO**, chưa đọc tài liệu, tạo embedding, lưu vector hay chạy benchmark. Bạn cần tự hiện thực. Vẫn có thể chọn Qdrant, Chroma hoặc vector store tương đương theo [GUIDE.md](../GUIDE.md).
+Bộ khởi động **tùy chọn** cho lab cá nhân. Docker Compose tạo PostgreSQL + pgvector local; `ingestion.py` và `chunking.py` đã đọc PDF, trích xuất chữ trong ảnh và xuất chunk; embedding, vector store, đánh giá và `run.py` còn **TODO**. Vẫn có thể chọn Qdrant, Chroma hoặc vector store tương đương theo [GUIDE.md](../GUIDE.md).
 
 ## Cấu trúc
 
@@ -8,13 +8,13 @@ Bộ khởi động **tùy chọn** cho lab cá nhân. Docker Compose tạo Post
 starter/
 ├── docker-compose.yml     # PostgreSQL 16 + pgvector, chỉ mở cổng local
 ├── init.sql               # bật extension khi tạo database mới
-├── requirements.txt       # psycopg, pypdf và python-dotenv
+├── requirements.txt       # psycopg, pypdf, Pillow và python-dotenv
 ├── .env.example           # cấu hình mẫu; copy thành .env
 ├── scripts/check_setup.py # kiểm tra kết nối và extension (đã chạy được)
 ├── src/
 │   ├── models.py          # cấu trúc dữ liệu mẫu
-│   ├── ingestion.py       # TODO: đọc / chuẩn hóa tài liệu
-│   ├── chunking.py        # TODO: chia chunk
+│   ├── ingestion.py       # đọc text + chữ trong ảnh, chuẩn hóa
+│   ├── chunking.py        # fixed-size / theo đoạn, ID ổn định
 │   ├── embeddings.py      # TODO: chọn model API hoặc local
 │   ├── store.py           # TODO: lưu vector, metadata và filter
 │   ├── evaluation.py      # TODO: chấm truy xuất, lưu trace
@@ -63,3 +63,56 @@ docker compose -p day6_student_starter stop
 5. Sau khi hoàn thiện, chạy `python -m src.run` từ thư mục `starter/`. Trước khi làm TODO, lệnh này **chủ động báo `NotImplementedError`**.
 
 Lưu code, cấu hình, kết quả và lệnh chạy để người chấm tái lập; không commit key, dữ liệu mật hoặc dữ liệu không có quyền chia sẻ.
+
+
+## 4. Xuất trang và chunk A/B
+
+Chạy từ **thư mục gốc repository** (để import được cả `starter` và module
+`scripts/figure_extraction.py` dùng chung; không copy riêng `starter/`):
+
+```bash
+starter/.venv/bin/python -m starter.src.prepare
+starter/.venv/bin/python -m unittest discover -s tests -v
+```
+
+Lệnh đọc đúng các trang vật lý được chọn trong `data/manifest.json`, xác minh
+SHA-256 PDF, giữ `section`, `printed_page`, ngôn ngữ và loại tài liệu. Hàm
+`load_pdf(path, document_id, source)` mặc định đọc tất cả các trang; truyền
+`page_numbers`, `page_metadata`, `errors=[]`, `stats={}` khi cần chọn trang và
+thu thập chẩn đoán. Số trang vật lý bắt đầu từ 1.
+
+Chữ PDF lấy bằng pypdf; chữ/nhãn và mô tả ảnh nhúng dùng cùng `FigureExtractor`
+và `merge_figures` như `scripts/read_corpus.py`. Cần Ollama local với model vision
+`mimo-v2.6:9b-mxfp8`. Cache mặc định là `data/processed/pages.jsonl`: chỉ tái sử dụng
+khi model digest, ảnh, ngữ cảnh, prompt và cấu hình trùng khớp. Cache vẫn cần
+Ollama để xác thực model. Có thể đổi `--cache`, `--model`, `--ollama-url`,
+`--timeout`. Đây là vision trên ảnh nhúng, không render toàn trang để nhận dạng
+các hình vẽ vector. Nếu vision lỗi, giữ text PDF, ghi lỗi ảnh và trả exit code 1.
+
+Chuẩn hóa NFC và khoảng trắng, nối dòng bị ngắt; giữ dòng trống và heading làm ranh giới
+đoạn. Nhận diện heading Markdown (`#`–`######`), đánh số, IN HOA và Title Case
+ngắn (tối đa 120 ký tự/12 từ đối với heading plain text). Đây là heuristic từ text,
+không dựa vào font PDF; heading viết kiểu câu thường có thể không được nhận diện. Loại footer đã biết và references/attributions của corpus khi có metadata
+trang in. Nội dung ảnh được ghép tại caption, hoặc cuối trang nếu không định vị
+được. Bản ghi trang giữ `text_only`, `figures`, `blocks` trong `metadata` để kiểm tra.
+
+Đầu ra được ghi đè mỗi lần chạy trong `starter/results/`:
+
+- `pages.jsonl`: trang chuẩn hóa, gồm nội dung ảnh và nguồn truy vết.
+- `ingestion_errors.jsonl`: lỗi nguồn, text, ảnh hoặc trang rỗng; file 0 byte nếu không lỗi.
+- `chunks_A.jsonl`: cửa sổ 500 ký tự, overlap 50.
+- `chunks_B.jsonl`: chia theo heading, tối đa 1.000 ký tự. Không coi nhãn trong khối ảnh và ô dưới caption bảng là heading. Heading liên tiếp được giữ cùng nội dung phía sau. Các mục liền kề đều ngắn dưới 1/3 giới hạn có thể ghép nếu vừa giới hạn; metadata `headings` lưu tất cả tiêu đề, `heading` là tiêu đề cuối trong danh sách (không phải filter thay thế cho `section`).
+- Đoạn quá 1.000 ký tự được chia cửa sổ cố định 1.000 ký tự, overlap chính xác 100 ký tự (bước 900), chỉ trong đoạn dài đó. Heading đứng trước được giữ cùng đoạn đầu. Các đoạn ngắn vẫn được gom theo cấu trúc, không overlap qua đoạn khác, heading khác hoặc trang khác. Cửa sổ cuối có thể ngắn; không cân bằng lại và không đổi điểm cắt theo câu/từ. Metadata `overlap_char_count`, `split_scope_start`, `split_scope_end` ghi vùng overlap và phạm vi đoạn dài.
+- `ingestion_summary.json`: tổng trang được chọn, trang lưu, trang rỗng, số ảnh, số lỗi (kể cả 0), cấu hình và phân bố độ dài chunk (`chunk_size_stats`).
+
+Mọi chunk nằm trong một trang, giữ `chunk_id`, `document_id`, `source`, `page`,
+`text`, cùng metadata filter `section` (và `language`, `document_type`). Offset
+`char_start`, `char_end` trỏ vào text chuẩn hóa của trang. ID SHA-256 dựa trên
+nguồn, tài liệu, trang, cấu hình có version và vị trí; chạy lại cùng đầu vào không
+nhân đôi. Khi nạp vector sau này, upsert ID hiện có và xóa chunk cũ không còn
+trong lần xuất mới.
+
+A/B chưa áp dụng filter. C dùng **chính `chunks_B.jsonl`**, áp dụng
+`question.filter` khi truy vấn có filter; bước truy vấn thuộc phần retrieval chưa
+hiện thực. Các kích thước là tham số khởi đầu, chưa tối ưu trên dev. Có thể đổi
+`--size 500 --overlap 50 --max-size 1000 --long-overlap 100`; không dùng test để chọn tham số.
